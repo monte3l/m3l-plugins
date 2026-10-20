@@ -1,0 +1,25 @@
+# Starting point for .github/labeler.yml, read by .github/workflows/labeler.yml
+# (actions/labeler). The first four labels (area:ci, area:docs, area:design,
+# area:harness) come from the org blueprint and are shared by every org
+# repository; the rest are specific to this repository. Keep the shared globs
+# as they are.
+
+"area:ci":
+  - changed-files:
+      - any-glob-to-any-file: [".github/**", "lefthook.yml"]
+
+"area:docs":
+  - changed-files:
+      - any-glob-to-any-file: ["docs/**", "*.md", "docs.config.mjs"]
+
+"area:design":
+  - changed-files:
+      - any-glob-to-any-file: ["design/**"]
+
+"area:harness":
+  - changed-files:
+      - any-glob-to-any-file: [".claude/**"]
+
+"area:catalog":
+  - changed-files:
+      - any-glob-to-any-file: [".claude-plugin/**", "bin/**"]
