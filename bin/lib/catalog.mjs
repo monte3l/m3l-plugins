@@ -14,9 +14,8 @@ export function readCatalog() {
 
 /** The git URL and `owner/repo` slug an entry's source points at. */
 export function repoOf(source) {
-  const raw = source.source === "github" ? source.repo : source.url;
-  const m = /^(?:https:\/\/github\.com\/)?([^/]+)\/([^/]+?)(?:\.git)?\/?$/.exec(raw ?? "");
-  if (!m) throw new Error(`cannot read a GitHub owner/repo from "${raw}"`);
+  const m = /^https:\/\/github\.com\/([^/]+)\/([^/]+?)(?:\.git)?\/?$/.exec(source.url ?? "");
+  if (!m) throw new Error(`cannot read a GitHub owner/repo from "${source.url}"`);
   return { owner: m[1], repo: m[2], url: `https://github.com/${m[1]}/${m[2]}.git` };
 }
 
@@ -72,7 +71,21 @@ export function cmpSemver(a, b) {
 
 export async function fetchManifest(source) {
   const { owner, repo } = repoOf(source);
-  const url = `https://raw.githubusercontent.com/${owner}/${repo}/${source.sha}/${manifestPath(source)}`;
+  const path = manifestPath(source);
+  // The pin comes from the catalog, which is reviewed, but it ends up in a
+  // URL, so refuse anything that is not a plain owner, repo, commit and path.
+  const safe = [
+    [owner, /^[A-Za-z0-9._-]+$/],
+    [repo, /^[A-Za-z0-9._-]+$/],
+    [source.sha, /^[0-9a-f]{40}$/],
+    [path, /^(?:[A-Za-z0-9._@-]+\/)*\.claude-plugin\/plugin\.json$/],
+  ];
+  for (const [value, re] of safe) {
+    if (!re.test(value ?? "") || String(value).includes("..")) {
+      throw new Error(`refusing to fetch with unexpected value "${value}"`);
+    }
+  }
+  const url = `https://raw.githubusercontent.com/${owner}/${repo}/${source.sha}/${path}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`GET ${url} -> ${res.status}`);
   return res.json();
