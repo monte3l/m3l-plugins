@@ -42,6 +42,24 @@
           "tagPattern": "m3l-prompt-optimizer--v*"
         }
       }
+    },
+    {
+      "name": "m3l-output-governor",
+      "description": "Measures where Claude Code's output tokens go and records which levers cut them: effort and the built-in Concise output style.",
+      "category": "development",
+      "homepage": "https://output-governor.monte3l.com",
+      "repository": "https://github.com/monte3l/m3l-output-governor",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/monte3l/m3l-output-governor.git",
+        "ref": "m3l-output-governor--v1.0.0",
+        "sha": "41162589d6b3517c3efab392f1b2d8dec4e77700"
+      },
+      "metadata": {
+        "m3l": {
+          "tagPattern": "m3l-output-governor--v*"
+        }
+      }
     }
   ]
 }

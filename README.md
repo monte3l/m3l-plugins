@@ -30,6 +30,7 @@ Entries never carry a `version`. The plugin's own `plugin.json` owns it, so a ne
 | --- | --- | --- |
 | `m3l-groundwork-customize` | Adds the `/customize` skill, which tailors a project bootstrapped by `@monte3l/groundwork`. | [m3l-groundwork](https://github.com/monte3l/m3l-groundwork) |
 | `m3l-prompt-optimizer` | Refines the prompts you type; a clear prompt passes through unchanged. | [m3l-prompt-optimizer](https://github.com/monte3l/m3l-prompt-optimizer) |
+| `m3l-output-governor` | Measures where Claude Code's output tokens go and which levers cut them. | [m3l-output-governor](https://github.com/monte3l/m3l-output-governor) |
 
 ## Requirements
 

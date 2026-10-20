@@ -9,3 +9,4 @@ This repository publishes no releases. The catalog is the product: every change 
 - Repository baseline, design system `v1.1.0` (vendored tier) and a docs site at plugins.monte3l.com.
 - Sources use full HTTPS URLs (`url` and `git-subdir`), not the `github` type or `owner/repo` shorthand, which clone over SSH and fail without a GitHub key. `bin/check-catalog.mjs` enforces it, and validates the values it puts in a URL.
 - `SECURITY.md` records the accepted OpenSSF Scorecard findings.
+- Listed `m3l-output-governor` at `m3l-output-governor--v1.0.0`.
