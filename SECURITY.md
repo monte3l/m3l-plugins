@@ -36,3 +36,16 @@ No workflow holds an Anthropic API key.
 
 > [!NOTE]
 > Accepted risk: the `plugin` lane of `verify.yml` installs `@anthropic-ai/claude-code` from `.github/ci-tools/` **with** its install script, because the script fetches the native binary. The lockfile pins the package by integrity hash, Dependabot proposes bumps after a one-day cooldown, and the job holds read-only permissions and no secrets. The same lane installs the listed plugins into a throwaway profile, which clones each pinned commit.
+
+## Accepted OpenSSF Scorecard findings
+
+Background, not policy: this explains the Scorecard results for anyone who looks them up. `scorecard.yml` runs weekly and surfaces its findings as Code Scanning alerts. The ones below are dismissed as deliberate or time-based, not defects. Do not "fix" the first one into a standing bypass.
+
+| Check | Score | Why it stays |
+| --- | --- | --- |
+| Branch-Protection | 8 | The top tier asks for two approvals. The organization has two members, so a PR has one reviewer who is not its author, and requiring two would block every merge unless a standing bypass existed. The `main` ruleset has an empty bypass list on purpose. Every other protection is on: a code-owner approval, approval of the last push, stale-review dismissal, an up-to-date branch, required checks, signed commits, and no force-push or deletion |
+| Code-Review | 6 | The first commit landed before the `main` ruleset existed, because a ruleset cannot be applied to an empty repository. Every PR since needs a code-owner approval, so the approved share rises as PRs merge. The alert is dismissed only until the score reaches 10 |
+| Maintained | 0 | Scorecard scores any repository under 90 days old as 0. This one was created on 2026-10-20, so it resolves itself in January 2027 |
+| Fuzzing | 0 | Not applicable. The inputs are this repository's own catalog and the output of `git ls-remote`, not an untrusted network or binary parser. A fuzzing library would also end the repository's no-dependency rule |
+
+The OpenSSF Best Practices badge is a real gap, not an accepted one. The project registers for it, and the alert stays open until the badge reaches Passing.

@@ -21,9 +21,15 @@ for (const entry of readCatalog().plugins) {
 
   if (seen.has(entry.name)) bad("duplicate name");
   seen.add(entry.name);
-  if (!["github", "git-subdir"].includes(source?.source)) {
-    bad(`source must be github or git-subdir, got ${source?.source}`);
+  if (!["url", "git-subdir"].includes(source?.source)) {
+    bad(`source must be url or git-subdir, got ${source?.source}`);
     continue;
+  }
+  // The `github` source type and `owner/repo` shorthand make Claude Code clone
+  // over SSH, which fails for anyone without a GitHub key, so require the full
+  // HTTPS URL.
+  if (!/^https:\/\/github\.com\//.test(source.url ?? "")) {
+    bad("source url must be a full https://github.com/ URL, not owner/repo shorthand");
   }
   if ("version" in entry) bad("must not set version; plugin.json owns it");
   if (!/^[0-9a-f]{40}$/.test(source.sha ?? "")) bad("sha must be 40 lowercase hex characters");

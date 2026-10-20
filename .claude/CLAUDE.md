@@ -18,6 +18,7 @@ This file sits in `.claude/`, not the repo root: a root `CLAUDE.md` makes `claud
 
 - Never set `version` on an entry. `plugin.json` owns it.
 - A pin is a tag **and** its full commit SHA. For an annotated tag that is the peeled commit (`^{}`), not the tag object.
+- Sources are `url` or `git-subdir` with a full `https://github.com/` URL. The `github` type and `owner/repo` shorthand clone over SSH and fail without a key. Test with `GIT_SSH_COMMAND=false bin/smoke-install.sh`.
 - Never rename a listed plugin.
 - Every tracked `.md` file needs a `pages` or `exclude` entry in `docs.config.mjs`.
 - `design/source/` is vendored from m3l-design. Never hand-edit it.
