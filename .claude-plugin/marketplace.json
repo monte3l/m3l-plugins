@@ -1,0 +1,47 @@
+{
+  "name": "monte3l",
+  "description": "Claude Code plugins by monte3l.",
+  "owner": {
+    "name": "monte3l",
+    "url": "https://github.com/monte3l"
+  },
+  "plugins": [
+    {
+      "name": "m3l-groundwork-customize",
+      "description": "Adds the /customize skill: interviews a bootstrapped project's owner, tailors the baseline to their answers, then checks the result against current official TypeScript and Anthropic guidance.",
+      "category": "development",
+      "homepage": "https://groundwork.monte3l.com",
+      "repository": "https://github.com/monte3l/m3l-groundwork",
+      "source": {
+        "source": "git-subdir",
+        "url": "monte3l/m3l-groundwork",
+        "path": "packages/plugin",
+        "ref": "@monte3l/groundwork@1.0.5",
+        "sha": "76f5846eff5513b583a73f6fcfd13a718a288b3d"
+      },
+      "metadata": {
+        "m3l": {
+          "tagPattern": "@monte3l/groundwork@*"
+        }
+      }
+    },
+    {
+      "name": "m3l-prompt-optimizer",
+      "description": "Refines the prompts you type in Claude Code using Anthropic's prompt-engineering guidance; a clear prompt passes through unchanged and any failure sends your original.",
+      "category": "productivity",
+      "homepage": "https://prompt-optimizer.monte3l.com",
+      "repository": "https://github.com/monte3l/m3l-prompt-optimizer",
+      "source": {
+        "source": "github",
+        "repo": "monte3l/m3l-prompt-optimizer",
+        "ref": "m3l-prompt-optimizer--v1.0.0",
+        "sha": "cafe0fe0723f1f82d60e3d8c9f04bf78a851b752"
+      },
+      "metadata": {
+        "m3l": {
+          "tagPattern": "m3l-prompt-optimizer--v*"
+        }
+      }
+    }
+  ]
+}

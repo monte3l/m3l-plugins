@@ -1,0 +1,8 @@
+node_modules/
+.env
+.env.*
+.DS_Store
+tmp/
+_site/
+.github/ci-tools/node_modules/
+.github/deploy-tools/node_modules/

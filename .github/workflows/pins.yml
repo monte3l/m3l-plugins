@@ -1,0 +1,61 @@
+name: Pins
+
+# What this does: once a day, compares every catalog pin with the newest
+# release tag of the plugin it points at, and opens (or updates) one issue
+# when any is stale. It never edits the catalog: moving a pin is the release
+# gate, so a maintainer runs `node bin/bump-pins.mjs --apply` and opens the
+# pull request. The issue is the only reminder; `verify` never fails on a
+# stale pin, since a plugin release must not turn this repo's PRs red.
+on:
+  schedule:
+    - cron: "15 6 * * *"
+  workflow_dispatch: {}
+
+permissions: {}
+
+concurrency:
+  group: pins
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Stale pins
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .node-version
+
+      - name: Report stale pins
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set +e
+          report="$(node bin/bump-pins.mjs --check 2>&1)"
+          status=$?
+          set -e
+          printf '%s\n' "$report"
+          title="Stale plugin pins"
+          existing="$(gh issue list --state open --label dependencies --search "\"$title\" in:title" --json number --jq '.[0].number // empty')"
+          if [ "$status" -eq 0 ]; then
+            if [ -n "$existing" ]; then
+              gh issue close "$existing" --comment "Every pin is current again."
+            fi
+            exit 0
+          fi
+          # shellcheck disable=SC2016 # the backticks are literal Markdown
+          body="$(printf 'A listed plugin has a newer release than its pin.\n\n```\n%s\n```\n\nRun `node bin/bump-pins.mjs --apply`, then `node bin/check-catalog.mjs` and `bin/smoke-install.sh`, and open a pull request.\n' "$report")"
+          if [ -n "$existing" ]; then
+            gh issue edit "$existing" --body "$body"
+          else
+            gh issue create --title "$title" --label dependencies --body "$body"
+          fi
