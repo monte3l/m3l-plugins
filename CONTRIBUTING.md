@@ -37,7 +37,7 @@ Then add one entry to `.claude-plugin/marketplace.json` and a row to the plugin 
 | --- | --- |
 | `name` | Equal to `plugin.json`'s `name`. Never rename a listed plugin |
 | `description` | Identical to `plugin.json`'s `description` |
-| `source` | `github`, or `git-subdir` for a plugin inside a larger repository. Both need `ref` (a release tag) and `sha` (the full 40-character commit that tag points to) |
+| `source` | `url`, or `git-subdir` for a plugin inside a larger repository. Both take the **full** `https://github.com/<owner>/<repo>.git` URL, never `owner/repo` shorthand and never the `github` type: both clone over SSH, which fails for anyone without a GitHub key. Both need `ref` (a release tag) and `sha` (the full 40-character commit that tag points to) |
 | `homepage` | `https://<name>.monte3l.com` |
 | `metadata.m3l.tagPattern` | A glob with one `*` for the version, such as `m3l-prompt-optimizer--v*` |
 | `version` | **Never set.** `plugin.json` owns it, and setting both makes the two disagree |

@@ -14,7 +14,7 @@
       "repository": "https://github.com/monte3l/m3l-groundwork",
       "source": {
         "source": "git-subdir",
-        "url": "monte3l/m3l-groundwork",
+        "url": "https://github.com/monte3l/m3l-groundwork.git",
         "path": "packages/plugin",
         "ref": "@monte3l/groundwork@1.0.5",
         "sha": "76f5846eff5513b583a73f6fcfd13a718a288b3d"
@@ -32,8 +32,8 @@
       "homepage": "https://prompt-optimizer.monte3l.com",
       "repository": "https://github.com/monte3l/m3l-prompt-optimizer",
       "source": {
-        "source": "github",
-        "repo": "monte3l/m3l-prompt-optimizer",
+        "source": "url",
+        "url": "https://github.com/monte3l/m3l-prompt-optimizer.git",
         "ref": "m3l-prompt-optimizer--v1.0.0",
         "sha": "cafe0fe0723f1f82d60e3d8c9f04bf78a851b752"
       },
