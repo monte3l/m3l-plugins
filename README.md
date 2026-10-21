@@ -1,5 +1,9 @@
 # m3l-plugins
 
+[![verify](https://github.com/monte3l/m3l-plugins/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/monte3l/m3l-plugins/actions/workflows/verify.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/monte3l/m3l-plugins/badge)](https://securityscorecards.dev/viewer/?uri=github.com/monte3l/m3l-plugins)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15760/badge)](https://www.bestpractices.dev/projects/15760)
+
 The `monte3l` Claude Code plugin marketplace: one catalog for every plugin the organization publishes.
 
 ## Who is this for
@@ -43,6 +47,7 @@ Claude Code 2.1.275 or later for the one-step `claude plugin install <plugin> --
 | `claude plugin validate --strict .` | Validates the catalog. It does not fetch remote sources. |
 | `node bin/check-catalog.mjs` | Fails unless every pin matches its release tag, `plugin.json` and the table above. |
 | `node bin/bump-pins.mjs --check` | Reports plugins with a newer release. `--apply` rewrites the pins. |
+| `node --test "tests/*.test.mjs"` | Runs the unit tests for `bin/`. They need no network. |
 | `bin/smoke-install.sh` | Adds the catalog to a throwaway profile and installs every plugin. |
 
 To list a plugin, open a pull request that adds its entry and a row in the table above. The entry needs a `tagPattern` under `metadata.m3l`, a `homepage` on `monte3l.com`, and a `description` identical to the plugin's `plugin.json`.

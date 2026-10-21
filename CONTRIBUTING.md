@@ -22,6 +22,14 @@ Report a suspected security vulnerability privately. See [`SECURITY.md`](SECURIT
 
 Branch from `main` as `feat/`, `fix/`, `ci/`, `chore/` or `docs/` plus a slug, and open a pull request. Merge with a merge commit.
 
+## Tests
+
+A change to `bin/` adds tests for new behavior, and a fix adds a regression test. The tests live in `tests/`, use `node:test`, need no network and no packages, and run in the `verify` check:
+
+```bash
+node --test "tests/*.test.mjs"
+```
+
 ## Listing a plugin
 
 A plugin lives in its own repository and is listed here by a pin. The plugin repository must:

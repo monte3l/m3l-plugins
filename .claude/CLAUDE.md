@@ -11,6 +11,7 @@ This file sits in `.claude/`, not the repo root: a root `CLAUDE.md` makes `claud
 | `claude plugin validate --strict .` | Catalog schema. Does not fetch remote sources |
 | `node bin/check-catalog.mjs` | Every pin is a release tag of a `monte3l` repo, its `sha` is what the tag resolves to, `description` equals `plugin.json`'s, and the README table has a row |
 | `node bin/bump-pins.mjs --check` | `OK` or `STALE` per plugin. `--apply` rewrites `ref` and `sha` |
+| `node --test "tests/*.test.mjs"` | Unit tests for `bin/`. Offline; add one with every change to `bin/` |
 | `bin/smoke-install.sh` | Installs every plugin into a throwaway `HOME` |
 | `node design/source/docs-kit/build.mjs --check` | Docs site gate |
 
