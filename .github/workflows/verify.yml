@@ -6,7 +6,7 @@ name: Verify
 # ruleset lists `verify`, so keep the job name of the last job below.
 #
 # Lanes are separate jobs, never a matrix, so a failure names its concern:
-# `checks` (JSON and the docs kit, no npm packages), `catalog` (every pin
+# `checks` (JSON, the unit tests and the docs kit, no npm packages), `catalog` (every pin
 # against its release tag and plugin.json), `plugin` (Claude Code validates the
 # catalog and installs every listed plugin), `dco`.
 #
@@ -46,6 +46,8 @@ jobs:
         run: git ls-files -z '*.json' | xargs -0 -n1 jq empty
 
       - run: shellcheck bin/*.sh
+
+      - run: node --test "tests/*.test.mjs"
 
       # The docs site gate: links, page coverage, design/SHA256SUMS, the local
       # CSS rule and the homepage. Writes nothing.

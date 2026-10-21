@@ -25,12 +25,9 @@ export function manifestPath(source) {
   return `${dir}.claude-plugin/plugin.json`;
 }
 
-function lsRemoteTags(url, ...patterns) {
-  const out = execFileSync("git", ["ls-remote", "--tags", url, ...patterns], {
-    encoding: "utf8",
-    env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
-  });
-  const tags = new Map(); // tag name -> { direct, peeled }
+/** Parses `git ls-remote --tags` output into a map of tag name -> { direct, peeled }. */
+export function parseLsRemote(out) {
+  const tags = new Map();
   for (const line of out.split("\n").filter(Boolean)) {
     const [sha, ref] = line.split("\t");
     const peeled = ref.endsWith("^{}");
@@ -42,6 +39,14 @@ function lsRemoteTags(url, ...patterns) {
   return tags;
 }
 
+function lsRemoteTags(url, ...patterns) {
+  const out = execFileSync("git", ["ls-remote", "--tags", url, ...patterns], {
+    encoding: "utf8",
+    env: { ...process.env, GIT_TERMINAL_PROMPT: "0" },
+  });
+  return parseLsRemote(out);
+}
+
 /**
  * The commit a tag resolves to: the peeled SHA for an annotated tag, the
  * direct SHA for a lightweight one. Returns null when `ref` is not a tag.
@@ -51,22 +56,52 @@ export function resolveTag(url, ref) {
   return t ? (t.peeled ?? t.direct) : null;
 }
 
-/** Every tag matching a `tagPattern` glob, as `{ tag, version, sha }`, stable releases only. */
-export function releaseTags(url, pattern) {
+/** Every tag matching a `tagPattern` glob, as `{ tag, version, sha }`, stable releases only, newest first. */
+export function matchReleaseTags(tags, pattern) {
   const [head, tail] = pattern.split("*");
   const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const re = new RegExp(`^${esc(head)}(\\d+\\.\\d+\\.\\d+)${esc(tail ?? "")}$`);
   const found = [];
-  for (const [tag, t] of lsRemoteTags(url, `refs/tags/${head}*`)) {
+  for (const [tag, t] of tags) {
     const m = re.exec(tag);
     if (m) found.push({ tag, version: m[1], sha: t.peeled ?? t.direct });
   }
   return found.sort((a, b) => cmpSemver(b.version, a.version));
 }
 
+export function releaseTags(url, pattern) {
+  return matchReleaseTags(lsRemoteTags(url, `refs/tags/${pattern.split("*")[0]}*`), pattern);
+}
+
 export function cmpSemver(a, b) {
   const [x, y] = [a, b].map((v) => v.split(".").map(Number));
   return x[0] - y[0] || x[1] - y[1] || x[2] - y[2];
+}
+
+/**
+ * The rules an entry must meet that need no network: returns one message per
+ * broken rule, empty when the entry is fine.
+ */
+export function entryProblems(entry, readme) {
+  const problems = [];
+  const { source } = entry;
+  if (!["url", "git-subdir"].includes(source?.source)) {
+    return [`source must be url or git-subdir, got ${source?.source}`];
+  }
+  // The `github` source type and `owner/repo` shorthand make Claude Code clone
+  // over SSH, which fails for anyone without a GitHub key, so require the full
+  // HTTPS URL.
+  if (!/^https:\/\/github\.com\//.test(source.url ?? "")) {
+    problems.push("source url must be a full https://github.com/ URL, not owner/repo shorthand");
+  }
+  if ("version" in entry) problems.push("must not set version; plugin.json owns it");
+  if (!/^[0-9a-f]{40}$/.test(source.sha ?? "")) problems.push("sha must be 40 lowercase hex characters");
+  if (!source.ref) problems.push("ref (a release tag) is required");
+  if (!/^https:\/\/[a-z0-9-]+\.monte3l\.com\/?$/.test(entry.homepage ?? "")) {
+    problems.push("homepage must be https://<name>.monte3l.com");
+  }
+  if (!readme.includes(`| \`${entry.name}\` |`)) problems.push("no row in the README plugin table");
+  return problems;
 }
 
 export async function fetchManifest(source) {

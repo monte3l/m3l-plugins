@@ -7,7 +7,7 @@
 // documented in the README. `claude plugin validate` never fetches remote
 // sources, so this is the check that catches a wrong or moved pin.
 import { existsSync, readFileSync } from "node:fs";
-import { fetchManifest, readCatalog, repoOf, resolveTag } from "./lib/catalog.mjs";
+import { entryProblems, fetchManifest, readCatalog, repoOf, resolveTag } from "./lib/catalog.mjs";
 
 const readme = existsSync(new URL("../README.md", import.meta.url))
   ? readFileSync(new URL("../README.md", import.meta.url), "utf8")
@@ -21,23 +21,8 @@ for (const entry of readCatalog().plugins) {
 
   if (seen.has(entry.name)) bad("duplicate name");
   seen.add(entry.name);
-  if (!["url", "git-subdir"].includes(source?.source)) {
-    bad(`source must be url or git-subdir, got ${source?.source}`);
-    continue;
-  }
-  // The `github` source type and `owner/repo` shorthand make Claude Code clone
-  // over SSH, which fails for anyone without a GitHub key, so require the full
-  // HTTPS URL.
-  if (!/^https:\/\/github\.com\//.test(source.url ?? "")) {
-    bad("source url must be a full https://github.com/ URL, not owner/repo shorthand");
-  }
-  if ("version" in entry) bad("must not set version; plugin.json owns it");
-  if (!/^[0-9a-f]{40}$/.test(source.sha ?? "")) bad("sha must be 40 lowercase hex characters");
-  if (!source.ref) bad("ref (a release tag) is required");
-  if (!/^https:\/\/[a-z0-9-]+\.monte3l\.com\/?$/.test(entry.homepage ?? "")) {
-    bad("homepage must be https://<name>.monte3l.com");
-  }
-  if (!readme.includes(`| \`${entry.name}\` |`)) bad("no row in the README plugin table");
+  entryProblems(entry, readme).forEach(bad);
+  if (!["url", "git-subdir"].includes(source?.source)) continue;
 
   try {
     const { owner, url } = repoOf(source);
