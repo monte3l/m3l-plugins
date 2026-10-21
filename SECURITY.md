@@ -30,7 +30,7 @@ You should get an acknowledgment within 7 days. There is no fixed disclosure tim
 | --- | --- | --- | --- |
 | `GITLEAKS_LICENSE` | Organization secret shared with this repository | A free license for the Gitleaks action. It reads nothing in the repository | Annual renewal |
 | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | `docs-cloudflare` environment, restricted to `main` | Deploys the docs site. The token is limited to Workers Scripts and Routes on the `monte3l.com` zone | Within one year |
-| `JANITOR_APP_CLIENT_ID`, `JANITOR_APP_PRIVATE_KEY` | `env-janitor` environment, restricted to `main` | Client ID and private key of the `monte3l-env-janitor` GitHub App, used by the weekly environment cleanup. The token it mints is limited to this repository: `administration: write`, `deployments: write`, `environments: read`, never repository secrets | The private key does not expire |
+| `JANITOR_APP_CLIENT_ID`, `JANITOR_APP_PRIVATE_KEY` | Organization secrets shared with this repository, named only in `environments.yml` | Client ID and private key of the `monte3l-env-janitor` GitHub App, used by the weekly environment cleanup. The token it mints is limited to this repository: `administration: write`, `deployments: write`, `environments: read`, never repository secrets | The private key does not expire |
 
 No workflow holds an Anthropic API key.
 
