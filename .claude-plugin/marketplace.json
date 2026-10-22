@@ -27,15 +27,15 @@
     },
     {
       "name": "m3l-prompt-optimizer",
-      "description": "Refines the prompts you type in Claude Code using Anthropic's prompt-engineering guidance; a clear prompt passes through unchanged and any failure sends your original.",
+      "description": "Claude Code plugin that refines the prompts you type using Anthropic's prompt-engineering guidance; clear prompts pass through unchanged.",
       "category": "productivity",
       "homepage": "https://prompt-optimizer.monte3l.com",
       "repository": "https://github.com/monte3l/m3l-prompt-optimizer",
       "source": {
         "source": "url",
         "url": "https://github.com/monte3l/m3l-prompt-optimizer.git",
-        "ref": "m3l-prompt-optimizer--v1.0.0",
-        "sha": "cafe0fe0723f1f82d60e3d8c9f04bf78a851b752"
+        "ref": "m3l-prompt-optimizer--v1.1.0",
+        "sha": "8be2485f86b72ca254673be7f071ea9f4fc4e543"
       },
       "metadata": {
         "m3l": {
