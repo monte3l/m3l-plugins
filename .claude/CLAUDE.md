@@ -10,7 +10,7 @@ This file sits in `.claude/`, not the repo root: a root `CLAUDE.md` makes `claud
 | --- | --- |
 | `claude plugin validate --strict .` | Catalog schema. Does not fetch remote sources |
 | `node bin/check-catalog.mjs` | Every pin is a release tag of a `monte3l` repo, its `sha` is what the tag resolves to, `description` equals `plugin.json`'s, and the README table has a row |
-| `node bin/bump-pins.mjs --check` | `OK` or `STALE` per plugin. `--apply` rewrites `ref` and `sha`. `--only owner/repo` limits it to one repository |
+| `node bin/bump-pins.mjs --check` | `OK` or `STALE` per plugin. `--apply` rewrites `ref` and `sha` and copies the new `plugin.json` description. `--only owner/repo` limits it to one repository |
 | `PAYLOAD_REPOSITORY=monte3l/<repo> node bin/bump-for-release.mjs` | What the `Pins` workflow runs on a `release-published` dispatch: checks the repository is listed, bumps only its pins and adds the CHANGELOG line. Edits files only; the workflow opens the pull request |
 | `node --test "tests/*.test.mjs"` | Unit tests for `bin/`. Offline; add one with every change to `bin/` |
 | `bin/smoke-install.sh` | Installs every plugin into a throwaway `HOME` |

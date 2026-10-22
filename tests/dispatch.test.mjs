@@ -5,6 +5,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 
+import { syncDescription } from "../bin/lib/catalog.mjs";
 import { appendBumpLines, assertSafeBumps, diffBumps, validateDispatch } from "../bin/lib/dispatch.mjs";
 
 const SHA = "a".repeat(40);
@@ -49,7 +50,7 @@ test("diffBumps lists only the plugins whose ref or sha changed", () => {
   const after = {
     plugins: [plugin("one", "repo-one", "one--v1.1.0", OTHER), plugin("two", "repo-two")],
   };
-  assert.deepEqual(diffBumps({ plugins }, after), [{ name: "one", from: "one--v1.0.0", to: "one--v1.1.0", sha: OTHER }]);
+  assert.deepEqual(diffBumps({ plugins }, after), [{ name: "one", from: "one--v1.0.0", to: "one--v1.1.0", sha: OTHER, description: false }]);
   assert.deepEqual(diffBumps({ plugins }, { plugins }), []);
 });
 
@@ -98,5 +99,30 @@ test("bump-pins --only selects nothing, and changes nothing, for a repository th
     const run = bumpPins(mode, "--only", "monte3l/not-in-the-catalog");
     assert.equal(run.status, 0, mode);
     assert.equal(run.stdout, "");
+  }
+});
+
+test("diffBumps says when the description moved with the pin", () => {
+  const before = { plugins: [{ ...plugin("one", "repo-one"), description: "Old." }] };
+  const after = { plugins: [{ ...plugin("one", "repo-one", "one--v1.1.0", OTHER), description: "New." }] };
+  assert.equal(diffBumps(before, after)[0].description, true);
+});
+
+test("appendBumpLines notes a description that changed with the pin", () => {
+  const out = appendBumpLines("## Unreleased\n\n- A.\n", [{ name: "one", to: "one--v1.1.0", description: true }]);
+  assert.ok(out.endsWith("- Moved `one` to `one--v1.1.0`, and its description to match `plugin.json`.\n"));
+});
+
+test("syncDescription copies a changed description and reports it", () => {
+  const entry = { name: "one", description: "Old." };
+  assert.equal(syncDescription(entry, { description: "New." }), true);
+  assert.equal(entry.description, "New.");
+});
+
+test("syncDescription leaves an equal, empty, missing or non-string description alone", () => {
+  for (const manifest of [{ description: "Same." }, { description: "" }, {}, { description: 7 }, null, undefined]) {
+    const entry = { name: "one", description: "Same." };
+    assert.equal(syncDescription(entry, manifest), false);
+    assert.equal(entry.description, "Same.");
   }
 });

@@ -54,7 +54,7 @@ Then add one entry to `.claude-plugin/marketplace.json` and a row to the plugin 
 
 When a listed plugin ships a release, its release workflow sends
 `release-published` and the `pins` workflow opens a pull request that moves
-that plugin's pin and adds the `CHANGELOG.md` line. Review the diff and merge
+that plugin's pin, copies its `plugin.json` description (`check-catalog` requires them to match) and adds the `CHANGELOG.md` line. Review the diff and merge
 it: `check-catalog` and the smoke install run on it as required checks. The
 pull request takes the new `ref` and `sha` from `git ls-remote`, never from the
 dispatch, and moves only the repository that released.

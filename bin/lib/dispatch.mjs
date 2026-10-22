@@ -34,18 +34,30 @@ export function validateDispatch(payload, plugins) {
   return { ok: true, slug, plugins: names };
 }
 
-/** The plugins whose pin differs between two catalogs, as `{ name, from, to, sha }`. */
+/**
+ * The plugins whose pin differs between two catalogs, as
+ * `{ name, from, to, sha, description }`, where `description` says the entry's
+ * description changed with the pin.
+ */
 export function diffBumps(before, after) {
-  const was = new Map(before.plugins.map((e) => [e.name, e.source]));
+  const was = new Map(before.plugins.map((e) => [e.name, e]));
   return after.plugins
-    .filter((e) => was.has(e.name) && (was.get(e.name).ref !== e.source.ref || was.get(e.name).sha !== e.source.sha))
-    .map((e) => ({ name: e.name, from: was.get(e.name).ref, to: e.source.ref, sha: e.source.sha }));
+    .filter((e) => was.has(e.name) && (was.get(e.name).source.ref !== e.source.ref || was.get(e.name).source.sha !== e.source.sha))
+    .map((e) => ({
+      name: e.name,
+      from: was.get(e.name).source.ref,
+      to: e.source.ref,
+      sha: e.source.sha,
+      description: was.get(e.name).description !== e.description,
+    }));
 }
 
 /** One CHANGELOG line per bump, appended to the end of the Unreleased list. */
 export function appendBumpLines(changelog, bumps) {
   if (!/^## Unreleased$/m.test(changelog)) throw new Error("CHANGELOG.md has no Unreleased section");
-  const lines = bumps.map((b) => `- Moved \`${b.name}\` to \`${b.to}\`.\n`).join("");
+  const lines = bumps
+    .map((b) => `- Moved \`${b.name}\` to \`${b.to}\`${b.description ? ", and its description to match `plugin.json`" : ""}.\n`)
+    .join("");
   return `${changelog.replace(/\n*$/, "\n")}${lines}`;
 }
 

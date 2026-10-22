@@ -104,6 +104,19 @@ export function entryProblems(entry, readme) {
   return problems;
 }
 
+/**
+ * check-catalog.mjs requires an entry's description to equal the pinned
+ * plugin.json's, so a bump copies it. Returns whether it changed. An empty or
+ * missing description is ignored: check-catalog fails on that, loudly, and
+ * overwriting a good description with nothing would hide it.
+ */
+export function syncDescription(entry, manifest) {
+  const next = manifest?.description;
+  if (typeof next !== "string" || next === "" || next === entry.description) return false;
+  entry.description = next;
+  return true;
+}
+
 export async function fetchManifest(source) {
   const { owner, repo } = repoOf(source);
   const path = manifestPath(source);
