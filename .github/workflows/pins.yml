@@ -1,14 +1,25 @@
 name: Pins
 
-# What this does: once a day, compares every catalog pin with the newest
-# release tag of the plugin it points at, and opens (or updates) one issue
-# when any is stale. It never edits the catalog: moving a pin is the release
-# gate, so a maintainer runs `node bin/bump-pins.mjs --apply` and opens the
-# pull request. The issue is the only reminder; `verify` never fails on a
-# stale pin, since a plugin release must not turn this repo's PRs red.
+# What this does, two ways:
+#
+# 1. Once a day (`schedule`), compares every catalog pin with the newest
+#    release tag of the plugin it points at, and opens (or updates) one issue
+#    when any is stale. It never edits the catalog. This is the safety net.
+# 2. When a plugin repository publishes a release, its release workflow sends
+#    `release-published` (`repository_dispatch`). The `bump` job then opens a
+#    pull request that moves that repository's pins and adds the CHANGELOG
+#    line. A person still reviews and merges it: moving a pin is the release
+#    gate, and the required checks (`check-catalog`, the smoke install) run on
+#    the pull request like any other. The payload only names the repository.
+#    The new ref and sha come from `git ls-remote`, never from the payload.
+#
+# `verify` never fails on a stale pin, since a plugin release must not turn
+# this repo's PRs red.
 on:
   schedule:
     - cron: "15 6 * * *"
+  repository_dispatch:
+    types: [release-published]
   workflow_dispatch: {}
 
 permissions: {}
@@ -20,6 +31,7 @@ concurrency:
 jobs:
   check:
     name: Stale pins
+    if: github.event_name != 'repository_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -59,3 +71,87 @@ jobs:
           else
             gh issue create --title "$title" --label dependencies --body "$body"
           fi
+
+  # Opens the pin pull request for one release. The commit is made through the
+  # API as the release App, so GitHub signs it and the required checks run on
+  # the pull request, which `GITHUB_TOKEN` would not trigger. The sign-off
+  # trailer carries the App's noreply address, the commit author's, which the
+  # DCO check compares.
+  bump:
+    name: Pin pull request
+    if: github.event_name == 'repository_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .node-version
+
+      - name: Mint a token for this repository only
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ secrets.RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ github.event.repository.name }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Move the pins of the repository that released
+        id: bump
+        env:
+          PAYLOAD_REPOSITORY: ${{ github.event.client_payload.repository }}
+        run: node bin/bump-for-release.mjs
+
+      - name: Open the pull request
+        if: steps.bump.outputs.proceed == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          BRANCH: ${{ steps.bump.outputs.branch }}
+          TITLE: ${{ steps.bump.outputs.title }}
+          SLUG: ${{ steps.bump.outputs.slug }}
+        run: |
+          # A pull request for this release already exists, open or merged:
+          # a repeated dispatch must not open a second one.
+          if [ "$(gh pr list --head "$BRANCH" --state all --json number --jq length)" != "0" ]; then
+            echo "$BRANCH already has a pull request"
+            exit 0
+          fi
+          # A branch with no pull request is the leftover of a run that failed
+          # half way. Delete it, or every retry would be blocked by it.
+          gh api -X DELETE "repos/$GH_REPO/git/refs/heads/$BRANCH" >/dev/null 2>&1 || true
+
+          base="$(git rev-parse HEAD)"
+          gh api -X POST "repos/$GH_REPO/git/refs" -f "ref=refs/heads/$BRANCH" -f "sha=$base" >/dev/null
+          signoff='Signed-off-by: monte3l-release[bot] <333264726+monte3l-release[bot]@users.noreply.github.com>'
+          # shellcheck disable=SC2016 # the dollar signs are GraphQL variables
+          query='mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid } } }'
+          if ! jq -n \
+            --arg query "$query" --arg repo "$GH_REPO" --arg branch "$BRANCH" --arg oid "$base" \
+            --arg title "$TITLE" --arg signoff "$signoff" \
+            --arg catalog "$(base64 -w0 .claude-plugin/marketplace.json)" \
+            --arg changelog "$(base64 -w0 CHANGELOG.md)" \
+            '{query: $query, variables: {input: {
+              branch: {repositoryNameWithOwner: $repo, branchName: $branch},
+              message: {headline: $title, body: $signoff},
+              expectedHeadOid: $oid,
+              fileChanges: {additions: [
+                {path: ".claude-plugin/marketplace.json", contents: $catalog},
+                {path: "CHANGELOG.md", contents: $changelog}]}}}}' |
+            gh api graphql --input - >/dev/null; then
+            gh api -X DELETE "repos/$GH_REPO/git/refs/heads/$BRANCH" >/dev/null 2>&1 || true
+            echo "could not commit to $BRANCH" >&2
+            exit 1
+          fi
+
+          # shellcheck disable=SC2016 # the backticks are literal Markdown
+          body="$(printf '%s published a release, so its catalog pin moves.\n\nThe new `ref` and `sha` come from `git ls-remote`, not from the dispatch payload, and `bin/bump-pins.mjs --only %s` moved nothing else. `check-catalog` and the smoke install run here as required checks. Review the diff, then merge it.\n' "$SLUG" "$SLUG")"
+          gh pr create --head "$BRANCH" --base main --title "$TITLE" --body "$body"
