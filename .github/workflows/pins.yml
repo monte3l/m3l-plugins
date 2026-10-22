@@ -119,10 +119,12 @@ jobs:
           TITLE: ${{ steps.bump.outputs.title }}
           SLUG: ${{ steps.bump.outputs.slug }}
         run: |
-          # A pull request for this release already exists, open or merged:
-          # a repeated dispatch must not open a second one.
-          if [ "$(gh pr list --head "$BRANCH" --state all --json number --jq length)" != "0" ]; then
-            echo "$BRANCH already has a pull request"
+          # A pull request for this release is already open, or was merged:
+          # a repeated dispatch must not open a second one. One that was
+          # closed without merging is not a reason to stop, or a fixed run
+          # could never replace it.
+          if [ "$(gh pr list --head "$BRANCH" --state all --json state --jq '[.[] | select(.state != "CLOSED")] | length')" != "0" ]; then
+            echo "$BRANCH already has an open or merged pull request"
             exit 0
           fi
           # A branch with no pull request is the leftover of a run that failed

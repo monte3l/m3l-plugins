@@ -4,12 +4,13 @@
 
 // Usage: bump-pins.mjs [--check | --apply] [--only owner/repo]
 // --check (default) prints OK or STALE per plugin and exits 1 on any STALE.
-// --apply rewrites ref and sha to the newest stable release tag. Review the
-// diff, then open the PR; nothing here commits or pushes.
+// --apply rewrites ref and sha to the newest stable release tag, and the
+// description to match plugin.json at that tag. Review the diff, then open the
+// PR; nothing here commits or pushes.
 // --only owner/repo leaves every plugin that points at another repository
 // alone, so a release of one plugin cannot move the pin of another.
 import { writeFileSync } from "node:fs";
-import { CATALOG, readCatalog, releaseTags, repoOf } from "./lib/catalog.mjs";
+import { CATALOG, fetchManifest, readCatalog, releaseTags, repoOf, syncDescription } from "./lib/catalog.mjs";
 
 const args = process.argv.slice(2);
 const onlyAt = args.indexOf("--only");
@@ -44,7 +45,13 @@ for (const entry of catalog.plugins) {
   }
   stale++;
   console.log(`STALE  ${entry.name}: ${entry.source.ref} -> ${latest.tag}`);
-  if (mode === "--apply") Object.assign(entry.source, { ref: latest.tag, sha: latest.sha });
+  if (mode === "--apply") {
+    Object.assign(entry.source, { ref: latest.tag, sha: latest.sha });
+    // check-catalog fails unless the description equals plugin.json's at the pin.
+    if (syncDescription(entry, await fetchManifest(entry.source))) {
+      console.log(`DESCRIPTION ${entry.name}: now matches plugin.json at ${latest.tag}`);
+    }
+  }
 }
 
 if (mode === "--apply" && stale) {

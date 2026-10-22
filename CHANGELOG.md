@@ -12,3 +12,4 @@ This repository publishes no releases. The catalog is the product: every change 
 - Unit tests for the catalog checks in `tests/`, run by `verify`, and a test policy in `CONTRIBUTING.md`.
 - Listed `m3l-output-governor` at `m3l-output-governor--v1.0.0`.
 - The `Pins` workflow opens a pull request when a plugin repository dispatches `release-published`: `bin/bump-for-release.mjs` checks the repository is listed, runs `bin/bump-pins.mjs --apply --only <owner/repo>` and records the CHANGELOG line, and the workflow commits it as the release App so it is signed. The daily issue stays as the safety net.
+- `bin/bump-pins.mjs --apply` also copies the new pin's `plugin.json` description into the entry, because `bin/check-catalog.mjs` requires them to be equal and the first automated pin pull request failed that check. A pin pull request closed without merging no longer blocks the next dispatch for the same release.
