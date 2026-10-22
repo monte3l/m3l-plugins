@@ -6,3 +6,7 @@ tmp/
 _site/
 .github/ci-tools/node_modules/
 .github/deploy-tools/node_modules/
+
+.groundwork/*
+!.groundwork/adoption-report.md
+!.groundwork/customization-report.md

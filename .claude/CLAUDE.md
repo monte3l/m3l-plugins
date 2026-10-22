@@ -25,3 +25,21 @@ This file sits in `.claude/`, not the repo root: a root `CLAUDE.md` makes `claud
 - Every tracked `.md` file needs a `pages` or `exclude` entry in `docs.config.mjs`.
 - `design/source/` is vendored from m3l-design. Never hand-edit it.
 - Work through a pull request from a `feat/`, `fix/`, `ci/`, `chore/` or `docs/` branch. Commits are signed and signed off (`git commit -s`).
+
+## Harness
+
+Installed by `/customize`. None of it runs in CI; it only shapes Claude Code sessions in this checkout.
+
+| File | Purpose |
+| --- | --- |
+| `.claude/settings.json` | Deny rules for `.env*`, lockfiles and `.git/`; hook registrations; the status line |
+| `.claude/hooks/guard-git-push-signed.mjs` | Blocks `git push` when an outgoing commit is unsigned (imports `bin/lib/signed-range.mjs`) |
+| `.claude/hooks/guard-double-background.mjs` | Blocks a backgrounded command that also sets `run_in_background` |
+| `.claude/hooks/guard-secret-writes.mjs` | Blocks writes of `.env` files and token literals |
+| `.claude/hooks/statusline.mjs`, `.claude/hooks/subagent-statusline.mjs`, `.claude/hooks/statusline-layout.mjs` | Status line renderers |
+| `.claude/agents/Explore.md`, `.claude/agents/code-reviewer.md`, `.claude/agents/silent-failure-hunter.md` | Read-only search and review spokes |
+| `.claude/skills/starting-work/SKILL.md`, `.claude/skills/writing-commits/SKILL.md`, `.claude/skills/creating-prs/SKILL.md`, `.claude/skills/finishing-work/SKILL.md`, `.claude/skills/triaging-ci/SKILL.md` | The branch, commit, PR, close-out and CI-triage workflow, targeted at this repo's `verify` lanes |
+| `.claude/skills/reviewing-dependabot-prs/SKILL.md`, `.claude/skills/triaging-scan-alerts/SKILL.md`, `.claude/skills/watching-pr-checks/SKILL.md` | `gh`-driven PR skills |
+| `.claude/skills/harness-guidance/SKILL.md` | Checks this `.claude/` surface against current Anthropic guidance; its state is `docs/research/harness-refresh.md` |
+
+There is no TypeScript here, so the baseline's `typescript-guidance` skill, its writer agents and its `src/`-path hooks were not installed.

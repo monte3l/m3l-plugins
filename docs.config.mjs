@@ -20,6 +20,8 @@ export default {
   exclude: [
     { glob: "CHANGELOG.md", reason: "release notes live on the GitHub releases page" },
     { glob: ".claude/**", reason: "instructions for coding agents, not reader-facing" },
+    { glob: "docs/research/**", reason: "harness refresh tracker for coding agents, not reader-facing" },
+    { glob: ".groundwork/**", reason: "adoption and customization reports for maintainers, not reader-facing" },
     { glob: "design/source/**", reason: "vendored m3l-design release, never edited here; the kit and brand book are documented upstream" },
   ],
 };
