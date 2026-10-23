@@ -7,7 +7,12 @@
 import { repoOf } from "./catalog.mjs";
 
 /** A payload value, made safe to print: short, printable ASCII only. */
-const shown = (value) => String(value).slice(0, 80).replace(/[^\x20-\x7e]/g, "?");
+// Only a string is printed as itself: String() on an object from a JSON payload
+// can throw (`{"toString": 0}`), so anything else shows as its type.
+const shown = (value) =>
+  (typeof value === "string" ? value : `a ${value === null ? "null" : typeof value}`)
+    .slice(0, 80)
+    .replace(/[^\x20-\x7e]/g, "?");
 
 /**
  * Accepts a payload only when it names a monte3l repository that some catalog

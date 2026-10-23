@@ -1,0 +1,11 @@
+{
+  "name": "m3l-plugins-dev-tools",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Pins the linter verify.yml runs over bin/, tests/ and the hooks, so the version is verified by a committed lockfile's integrity hash.",
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.13.0",
+    "globals": "17.13.0"
+  }
+}

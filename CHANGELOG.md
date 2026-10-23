@@ -15,3 +15,5 @@ This repository publishes no releases. The catalog is the product: every change 
 - `bin/bump-pins.mjs --apply` also copies the new pin's `plugin.json` description into the entry, because `bin/check-catalog.mjs` requires them to be equal and the first automated pin pull request failed that check. A pin pull request closed without merging no longer blocks the next dispatch for the same release.
 - Moved `m3l-prompt-optimizer` to `m3l-prompt-optimizer--v1.1.0`, and its description to match `plugin.json`.
 - Moved `m3l-groundwork-customize` to `@monte3l/groundwork@1.1.0`.
+- `verify` gates `bin/` at 80% statement, branch and function coverage, lints the JavaScript with ESLint (`.github/dev-tools/`), and runs fast-check property tests of the parsers (`tests/property/`). `bin/check-catalog.mjs` and `bin/bump-pins.mjs` keep their logic in `bin/lib/catalog.mjs` so the tests can reach it.
+- `parseLsRemote` skips a line that is not `<sha><tab><ref>`, and a dispatch payload whose `repository` is an object no longer throws in `validateDispatch`. Both were found by the property tests.

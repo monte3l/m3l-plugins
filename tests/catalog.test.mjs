@@ -6,11 +6,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 import {
+  checkCatalog,
   cmpSemver,
   entryProblems,
   fetchManifest,
   manifestPath,
   matchReleaseTags,
+  parseBumpArgs,
   parseLsRemote,
   readCatalog,
   repoOf,
@@ -104,4 +106,91 @@ test("fetchManifest refuses unexpected values before any request", async () => {
 test("the real catalog passes the offline rules", () => {
   const readme = readFileSync(new URL("../README.md", import.meta.url), "utf8");
   for (const e of readCatalog().plugins) assert.deepEqual(entryProblems(e, readme), [], e.name);
+});
+
+const LS = (sha, ref) => `${sha}\t${ref}`;
+
+test("parseLsRemote skips lines that are not `<sha>\\t<ref>`", () => {
+  const out = [LS(SHA, "refs/tags/v1"), "garbage", `${SHA}`, LS("short", "refs/tags/v2"), ""].join("\n");
+  assert.deepEqual([...parseLsRemote(out).keys()], ["v1"]);
+});
+
+test("parseLsRemote pairs an annotated tag with its peeled commit", () => {
+  const peeled = "b".repeat(40);
+  const tags = parseLsRemote([LS(SHA, "refs/tags/v1"), LS(peeled, "refs/tags/v1^{}")].join("\n"));
+  assert.deepEqual(tags.get("v1"), { direct: SHA, peeled });
+});
+
+const PIN = { ref: "demo--v1.0.0", sha: SHA };
+const good = (e = entry()) => ({ resolve: () => SHA, manifestOf: async () => ({ name: e.name, version: "1.0.0", description: e.description }) });
+
+test("checkCatalog passes a consistent catalog", async () => {
+  const e = entry({ description: "d" });
+  assert.deepEqual(await checkCatalog([e], README, good(e)), { problems: [], checked: 1 });
+});
+
+test("checkCatalog reports a tag that is missing or moved", async () => {
+  const e = entry({ description: "d" });
+  const missing = await checkCatalog([e], README, { ...good(e), resolve: () => null });
+  assert.match(missing.problems[0], /is not a tag/);
+  const moved = await checkCatalog([e], README, { ...good(e), resolve: () => "c".repeat(40) });
+  assert.match(moved.problems[0], new RegExp(`${PIN.ref} is c{40}, pinned sha is a{40}`));
+});
+
+test("checkCatalog reports a manifest that disagrees with the entry", async () => {
+  const e = entry({ description: "d" });
+  const r = await checkCatalog([e], README, { ...good(e), manifestOf: async () => ({ name: "other", description: "x" }) });
+  assert.deepEqual(r.problems.map((p) => p.replace(/^demo: /, "")), [
+    "plugin.json name is other",
+    "plugin.json has no version",
+    "description differs from plugin.json",
+  ]);
+});
+
+test("checkCatalog fails closed when a lookup throws", async () => {
+  const e = entry({ description: "d" });
+  const r = await checkCatalog([e], README, { ...good(e), resolve: () => { throw new Error("offline"); } });
+  assert.deepEqual(r.problems, ["demo: could not verify the pin: offline"]);
+});
+
+test("checkCatalog reports a duplicate name and a foreign owner", async () => {
+  const e = entry({ description: "d" }, { url: "https://github.com/someone/demo.git" });
+  const r = await checkCatalog([e, e], README, good(e));
+  assert.ok(r.problems.includes("demo: duplicate name"));
+  assert.ok(r.problems.includes("demo: repo owner is someone, not monte3l"));
+});
+
+test("checkCatalog does not hit the network for an unsupported source", async () => {
+  const e = entry({}, { source: "github" });
+  const never = () => { throw new Error("should not be called"); };
+  const r = await checkCatalog([e], README, { resolve: never, manifestOf: never });
+  assert.deepEqual(r.problems, ["demo: source must be url or git-subdir, got github"]);
+});
+
+test("parseBumpArgs defaults to --check and accepts --apply and --only", () => {
+  assert.deepEqual(parseBumpArgs([]), { mode: "--check", only: undefined });
+  assert.deepEqual(parseBumpArgs(["--apply"]), { mode: "--apply", only: undefined });
+  assert.deepEqual(parseBumpArgs(["--only", "monte3l/m3l-x", "--apply"]), { mode: "--apply", only: "monte3l/m3l-x" });
+  assert.deepEqual(parseBumpArgs(["--check", "--only", "a/b"]), { mode: "--check", only: "a/b" });
+});
+
+test("parseBumpArgs rejects an unknown mode, extra arguments and a bad --only", () => {
+  for (const argv of [["--bogus"], ["--check", "--apply"], ["--only"], ["--only", "nope"], ["--only", "a/b/c"]]) {
+    assert.match(parseBumpArgs(argv).error, /^usage:/, argv.join(" "));
+  }
+});
+
+test("repoOf rejects a url that is not a GitHub repository", () => {
+  assert.throws(() => repoOf({ url: "git@github.com:monte3l/x.git" }), /cannot read/);
+  assert.throws(() => repoOf({}), /cannot read/);
+});
+
+test("manifestPath puts a git-subdir plugin's manifest under its path", () => {
+  assert.equal(manifestPath({ source: "git-subdir", path: "packages/x/" }), "packages/x/.claude-plugin/plugin.json");
+});
+
+test("fetchManifest refuses an unsafe value before any request", async () => {
+  const src = { source: "url", url: "https://github.com/monte3l/x.git", sha: "nothex" };
+  await assert.rejects(() => fetchManifest(src), /refusing to fetch/);
+  await assert.rejects(() => fetchManifest({ ...src, sha: SHA, url: "https://github.com/mon..te3l/x.git" }), /refusing to fetch/);
 });

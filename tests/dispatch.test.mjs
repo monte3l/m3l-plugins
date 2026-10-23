@@ -35,6 +35,14 @@ test("another owner, a missing or non-string repository and odd characters are r
   assert.equal(validateDispatch(null, plugins).ok, false);
 });
 
+test("an object repository whose toString is not callable is refused, not thrown on", () => {
+  for (const repository of [{ toString: 0 }, Object.create(null), [{ toString: 0 }]]) {
+    const r = validateDispatch({ repository }, plugins);
+    assert.equal(r.ok, false);
+    assert.match(r.reason, /is not a monte3l repository/);
+  }
+});
+
 test("a refusal reason never carries control characters or a long payload", () => {
   const { reason } = validateDispatch({ repository: `::error::\n${"x".repeat(500)}` }, plugins);
   assert.ok(!/[\n\r]/.test(reason));

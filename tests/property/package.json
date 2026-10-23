@@ -1,0 +1,10 @@
+{
+  "name": "m3l-plugins-property-tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Pins fast-check, the property-based test library for the parsers in bin/lib/, by a committed lockfile's integrity hash.",
+  "devDependencies": {
+    "fast-check": "4.10.2"
+  }
+}

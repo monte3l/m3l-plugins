@@ -47,7 +47,9 @@ Claude Code 2.1.275 or later for the one-step `claude plugin install <plugin> --
 | `claude plugin validate --strict .` | Validates the catalog. It does not fetch remote sources. |
 | `node bin/check-catalog.mjs` | Fails unless every pin matches its release tag, `plugin.json` and the table above. |
 | `node bin/bump-pins.mjs --check` | Reports plugins with a newer release. `--apply` rewrites the pins. |
-| `node --test "tests/*.test.mjs"` | Runs the unit tests for `bin/`. They need no network. |
+| `node --test "tests/*.test.mjs"` | Runs the unit tests for `bin/`. They need no network. `verify` adds a coverage gate of 80%. |
+| `node --test "tests/property/*.property.test.js"` | Runs the fast-check property tests. Install first with `npm ci --ignore-scripts --prefix tests/property`. |
+| `.github/dev-tools/node_modules/.bin/eslint -c .github/dev-tools/eslint.config.mjs .` | Lints the JavaScript. Install first with `npm ci --ignore-scripts --prefix .github/dev-tools`. |
 | `bin/smoke-install.sh` | Adds the catalog to a throwaway profile and installs every plugin. |
 
 To list a plugin, open a pull request that adds its entry and a row in the table above. The entry needs a `tagPattern` under `metadata.m3l`, a `homepage` on `monte3l.com`, and a `description` identical to the plugin's `plugin.json`.
