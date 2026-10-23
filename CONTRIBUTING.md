@@ -24,10 +24,26 @@ Branch from `main` as `feat/`, `fix/`, `ci/`, `chore/` or `docs/` plus a slug, a
 
 ## Tests
 
-A change to `bin/` adds tests for new behavior, and a fix adds a regression test. The tests live in `tests/`, use `node:test`, need no network and no packages, and run in the `verify` check:
+A change to `bin/` adds tests for new behavior, and a fix adds a regression test. The unit tests live in `tests/`, use `node:test`, need no network and no packages, and run in the `verify` check. The `checks` lane fails when `bin/` drops below 80% of lines, branches or functions covered:
 
 ```bash
-node --test "tests/*.test.mjs"
+node --test --experimental-test-coverage --test-coverage-include='bin/**' \
+  --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 \
+  "tests/*.test.mjs"
+```
+
+The parsers that read outside input also have property-based tests in `tests/property/`, written with fast-check. When one fails it prints the seed and a shrunk counterexample: fix the code, then add that case to `tests/` as a regression test.
+
+```bash
+npm ci --ignore-scripts --prefix tests/property
+node --test "tests/property/*.property.test.js"
+```
+
+ESLint checks the JavaScript. Its version is pinned in `.github/dev-tools/`:
+
+```bash
+npm ci --ignore-scripts --prefix .github/dev-tools
+.github/dev-tools/node_modules/.bin/eslint -c .github/dev-tools/eslint.config.mjs .
 ```
 
 ## Listing a plugin

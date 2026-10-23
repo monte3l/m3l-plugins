@@ -30,6 +30,9 @@ export function parseLsRemote(out) {
   const tags = new Map();
   for (const line of out.split("\n").filter(Boolean)) {
     const [sha, ref] = line.split("\t");
+    // A line that is not `<40-hex sha>\t<ref>` is skipped, so the tag it
+    // might have named reads as missing and check-catalog reports it.
+    if (!/^[0-9a-f]{40}$/.test(sha) || typeof ref !== "string") continue;
     const peeled = ref.endsWith("^{}");
     const name = ref.replace(/^refs\/tags\//, "").replace(/\^\{\}$/, "");
     const t = tags.get(name) ?? {};
@@ -137,4 +140,56 @@ export async function fetchManifest(source) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`GET ${url} -> ${res.status}`);
   return res.json();
+}
+
+/**
+ * Every problem in the catalog, one `name: message` per broken rule: the
+ * offline rules, then each pin against its release tag and the plugin's own
+ * manifest. `resolve` and `manifestOf` are injected so the network stays out of
+ * the tests. A lookup that throws is reported, never swallowed.
+ */
+export async function checkCatalog(plugins, readme, { resolve = resolveTag, manifestOf = fetchManifest } = {}) {
+  const problems = [];
+  const seen = new Set();
+
+  for (const entry of plugins) {
+    const bad = (msg) => problems.push(`${entry.name}: ${msg}`);
+    const { source } = entry;
+
+    if (seen.has(entry.name)) bad("duplicate name");
+    seen.add(entry.name);
+    entryProblems(entry, readme).forEach(bad);
+    if (!["url", "git-subdir"].includes(source?.source)) continue;
+
+    try {
+      const { owner, url } = repoOf(source);
+      if (owner !== "monte3l") bad(`repo owner is ${owner}, not monte3l`);
+      const tagSha = resolve(url, source.ref);
+      if (!tagSha) bad(`ref ${source.ref} is not a tag in ${url}`);
+      else if (tagSha !== source.sha) bad(`ref ${source.ref} is ${tagSha}, pinned sha is ${source.sha}`);
+
+      const manifest = await manifestOf(source);
+      if (manifest.name !== entry.name) bad(`plugin.json name is ${manifest.name}`);
+      if (!manifest.version) bad("plugin.json has no version");
+      if (manifest.description !== entry.description) bad("description differs from plugin.json");
+    } catch (err) {
+      bad(`could not verify the pin: ${err.message}`);
+    }
+  }
+  return { problems, checked: seen.size };
+}
+
+/**
+ * Parses bump-pins.mjs's argv: `[--check | --apply] [--only owner/repo]`.
+ * Returns `{ mode, only }`, or `{ error }` when the usage is wrong.
+ */
+export function parseBumpArgs(args) {
+  const onlyAt = args.indexOf("--only");
+  const only = onlyAt === -1 ? undefined : args[onlyAt + 1];
+  const rest = args.filter((_, i) => onlyAt === -1 || (i !== onlyAt && i !== onlyAt + 1));
+  const mode = rest[0] ?? "--check";
+  if (!["--check", "--apply"].includes(mode) || rest.length > 1 || (onlyAt !== -1 && !/^[\w.-]+\/[\w.-]+$/.test(only ?? ""))) {
+    return { error: "usage: bump-pins.mjs [--check | --apply] [--only owner/repo]" };
+  }
+  return { mode, only };
 }

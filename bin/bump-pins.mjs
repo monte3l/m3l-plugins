@@ -10,15 +10,11 @@
 // --only owner/repo leaves every plugin that points at another repository
 // alone, so a release of one plugin cannot move the pin of another.
 import { writeFileSync } from "node:fs";
-import { CATALOG, fetchManifest, readCatalog, releaseTags, repoOf, syncDescription } from "./lib/catalog.mjs";
+import { CATALOG, fetchManifest, parseBumpArgs, readCatalog, releaseTags, repoOf, syncDescription } from "./lib/catalog.mjs";
 
-const args = process.argv.slice(2);
-const onlyAt = args.indexOf("--only");
-const only = onlyAt === -1 ? undefined : args[onlyAt + 1];
-const rest = args.filter((_, i) => i !== onlyAt && i !== onlyAt + 1 || onlyAt === -1);
-const mode = rest[0] ?? "--check";
-if (!["--check", "--apply"].includes(mode) || rest.length > 1 || (onlyAt !== -1 && !/^[\w.-]+\/[\w.-]+$/.test(only ?? ""))) {
-  console.error("usage: bump-pins.mjs [--check | --apply] [--only owner/repo]");
+const { mode, only, error } = parseBumpArgs(process.argv.slice(2));
+if (error) {
+  console.error(error);
   process.exit(2);
 }
 

@@ -40,3 +40,29 @@ updates:
       default-days: 1
     labels:
       - dependencies
+
+  # .github/dev-tools/ pins the ESLint version the `lint` lane runs, and
+  # tests/property/ pins fast-check. Both are test-time tools, never shipped,
+  # but a bump can change what the lanes report, so each arrives as a reviewed
+  # PR with a one-week cooldown.
+  - package-ecosystem: npm
+    directory: /.github/dev-tools
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    cooldown:
+      default-days: 7
+    labels:
+      - dependencies
+
+  - package-ecosystem: npm
+    directory: /tests/property
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: ci
+    cooldown:
+      default-days: 7
+    labels:
+      - dependencies

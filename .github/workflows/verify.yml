@@ -6,15 +6,18 @@ name: Verify
 # ruleset lists `verify`, so keep the job name of the last job below.
 #
 # Lanes are separate jobs, never a matrix, so a failure names its concern:
-# `checks` (JSON, the unit tests and the docs kit, no npm packages), `catalog` (every pin
-# against its release tag and plugin.json), `plugin` (Claude Code validates the
-# catalog and installs every listed plugin), `dco`.
+# `checks` (JSON, the unit tests with a coverage gate and the docs kit, no npm
+# packages), `lint` (ESLint over the JavaScript), `property` (fast-check
+# property tests), `catalog` (every pin against its release tag and
+# plugin.json), `plugin` (Claude Code validates the catalog and installs every
+# listed plugin), `dco`.
 #
-# Only the `plugin` lane installs anything. Claude Code comes from
-# .github/ci-tools/, whose committed lockfile pins it by integrity hash. Its
-# install script runs (it fetches the native binary), so every lane holds
-# read-only permissions and no secrets. The listed plugins are public, so
-# cloning them needs no token.
+# Three lanes install packages, each from its own directory whose committed
+# lockfile pins them by integrity hash: `plugin` (.github/ci-tools/, Claude
+# Code, whose install script runs because it fetches the native binary), `lint`
+# (.github/dev-tools/) and `property` (tests/property/), both with
+# --ignore-scripts. Every lane holds read-only permissions and no secrets. The
+# listed plugins are public, so cloning them needs no token.
 on:
   push:
     branches: [main]
@@ -47,11 +50,58 @@ jobs:
 
       - run: shellcheck bin/*.sh
 
-      - run: node --test "tests/*.test.mjs"
+      # The gate fails the lane when bin/ drops below 80% of lines, branches
+      # or functions covered.
+      - run: >-
+          node --test --experimental-test-coverage
+          --test-coverage-include='bin/**'
+          --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80
+          "tests/*.test.mjs"
 
       # The docs site gate: links, page coverage, design/SHA256SUMS, the local
       # CSS rule and the homepage. Writes nothing.
       - run: node design/source/docs-kit/build.mjs --check
+
+  # ESLint's recommended rules plus a few strict ones, over bin/, tests/, the
+  # hooks and the docs config. The linter comes from .github/dev-tools/ and its
+  # config is committed there; nothing is written.
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .node-version
+
+      - run: npm ci --ignore-scripts --prefix .github/dev-tools
+
+      - run: .github/dev-tools/node_modules/.bin/eslint -c .github/dev-tools/eslint.config.mjs .
+
+  # Property-based tests (fast-check) of the parsers that read outside input.
+  # They need no network. A failure prints the seed and the shrunk
+  # counterexample: rerun it with that seed, then add the case to tests/ as a
+  # regression test.
+  property:
+    name: Property tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version-file: .node-version
+
+      - run: npm ci --ignore-scripts --prefix tests/property
+
+      - run: node --test "tests/property/*.property.test.js"
 
   # The only check that reads the remote repositories the catalog points at:
   # `claude plugin validate` never fetches them. Fails closed on a network
@@ -168,7 +218,7 @@ jobs:
   verify:
     name: verify
     runs-on: ubuntu-latest
-    needs: [checks, catalog, plugin, dco]
+    needs: [checks, lint, property, catalog, plugin, dco]
     if: always()
     timeout-minutes: 5
     steps:
