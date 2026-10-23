@@ -93,7 +93,7 @@ The first four also run on your machine with the commands above. Locally, the te
 | Workflows | `actionlint` and `zizmor` clean, every action pinned to a commit SHA, per-job `permissions:` | `workflow-lint.yml` |
 | Formatting | `.editorconfig` | Review |
 | Licenses | An SPDX declaration for every file (`REUSE.toml` or a header) | `reuse.yml` |
-| Commit messages | Conventional Commits, signed off and signed | The `DCO sign-off` job and the `main` ruleset |
+| Commit messages | Conventional Commits, signed off and signed | The `Commit lint` and `DCO sign-off` jobs, and the `main` ruleset |
 | Markdown | The m3l-design rules: bold, never italics or underlines, an alert matched to severity and never more than two in a row, tables for tabular data | Review, and the docs kit's `--check` |
 
 A change that breaks one of these fails a required check. There is no separate style review: the tooling is the standard.
