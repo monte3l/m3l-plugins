@@ -4,7 +4,7 @@
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/monte3l/m3l-plugins/badge)](https://securityscorecards.dev/viewer/?uri=github.com/monte3l/m3l-plugins)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15760/badge)](https://www.bestpractices.dev/projects/15760)
 
-The `monte3l` Claude Code plugin marketplace: one catalog for every plugin the organization publishes.
+A Claude Code plugin marketplace with one catalogue for every plugin the organization publishes, each pinned to a release.
 
 ## Who is this for
 
