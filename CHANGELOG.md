@@ -20,3 +20,4 @@ This repository publishes no releases. The catalog is the product: every change 
 - `GOVERNANCE.md`, `ROADMAP.md`, `docs/architecture.md` and `docs/assurance-case.md`, and a fuller `SECURITY.md` (support scope, response process, remediation thresholds, an accurate secrets inventory) and `CONTRIBUTING.md` (setup, coding standards, review, dependencies, account security), toward the OpenSSF Best Practices Silver badge and Baseline 3.
 - `.bestpractices.json` answers `version_tags_signed` Unmet (the form takes no N/A) and `hardening` Met.
 - `.bestpractices.json` answers `external_dependencies` N/A, the only status the form accepts for a project whose shipped scripts have no dependencies.
+- Moved `m3l-groundwork-customize` to `@monte3l/groundwork@1.1.1`.
