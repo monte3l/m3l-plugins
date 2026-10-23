@@ -9,6 +9,7 @@ export default {
   repo: "https://github.com/monte3l/m3l-plugins",
   siteUrl: "https://plugins.monte3l.com",
   designDir: "design",
+  brand: true,
   manifest: "package.json", // its homepage must equal siteUrl
   navGroups: ["Start", "Project", "Security"],
   pages: [
