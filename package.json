@@ -1,7 +1,7 @@
 {
   "name": "m3l-plugins",
   "private": true,
-  "description": "A Claude Code plugin marketplace with one catalog for every plugin the organization publishes, each pinned to a release",
+  "description": "A Claude Code plugin marketplace with one catalogue for every plugin the organization publishes, each pinned to a release",
   "homepage": "https://plugins.monte3l.com",
   "repository": "https://github.com/monte3l/m3l-plugins",
   "license": "MIT"
