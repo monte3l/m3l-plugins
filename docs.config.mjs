@@ -14,8 +14,12 @@ export default {
   pages: [
     { src: "README.md", out: "index.html", group: "Start", label: "Overview" },
     { src: "CONTRIBUTING.md", out: "CONTRIBUTING.html", group: "Project", label: "Contributing" },
+    { src: "GOVERNANCE.md", out: "GOVERNANCE.html", group: "Project", label: "Governance" },
+    { src: "ROADMAP.md", out: "ROADMAP.html", group: "Project", label: "Roadmap" },
+    { src: "docs/architecture.md", out: "architecture.html", group: "Project", label: "Architecture" },
     { src: "design/README.md", out: "design.html", group: "Project", label: "Design system" },
     { src: "SECURITY.md", out: "SECURITY.html", group: "Security", label: "Security policy" },
+    { src: "docs/assurance-case.md", out: "assurance-case.html", group: "Security", label: "Assurance case" },
   ],
   exclude: [
     { glob: "CHANGELOG.md", reason: "release notes live on the GitHub releases page" },

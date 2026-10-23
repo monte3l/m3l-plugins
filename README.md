@@ -54,6 +54,18 @@ Claude Code 2.1.275 or later for the one-step `claude plugin install <plugin> --
 
 To list a plugin, open a pull request that adds its entry and a row in the table above. The entry needs a `tagPattern` under `metadata.m3l`, a `homepage` on `monte3l.com`, and a `description` identical to the plugin's `plugin.json`.
 
+## Project
+
+| Document | What it covers |
+| --- | --- |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | How to report a bug, set up, write a change and list a plugin |
+| [`GOVERNANCE.md`](GOVERNANCE.md) | Who decides, how access is granted and what happens if an owner is unavailable |
+| [`ROADMAP.md`](ROADMAP.md) | What is planned for the next year, and what will not be done |
+| [`SECURITY.md`](SECURITY.md) | How to report a vulnerability, the response process and the secrets inventory |
+| [`docs/architecture.md`](docs/architecture.md) | How the catalog, the scripts and the workflows fit together |
+| [`docs/assurance-case.md`](docs/assurance-case.md) | The threat model and the argument that the catalog is secure |
+| [Code of Conduct](https://github.com/monte3l/.github/blob/main/CODE_OF_CONDUCT.md) | The organization's standard for taking part |
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
