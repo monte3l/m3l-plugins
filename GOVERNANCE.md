@@ -77,6 +77,6 @@ Two Gold criteria cannot honestly be met today. Each is recorded **Unmet** in `.
 
 `two_person_review` is **Met**: the ruleset requires an approval from someone other than the author, and the recent history carries one on every merged pull request.
 
-`version_tags_signed` and `signed_releases` are not applicable, because the repository creates no tags or releases. Every plugin pin is a tag in the plugin's own repository, checked by `bin/check-catalog.mjs`.
+`signed_releases` is not applicable, because the repository publishes no releases. `version_tags_signed` is **Unmet**, because the criterion only allows Met or Unmet, and it is only suggested: the repository creates no tags to sign. Every plugin pin is a tag in the plugin's own repository, checked by `bin/check-catalog.mjs`.
 
 Closing the first two means onboarding a second active maintainer and an outside contributor, not a code or process change. See [`ROADMAP.md`](ROADMAP.md).

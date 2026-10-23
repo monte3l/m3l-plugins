@@ -275,8 +275,8 @@
   "input_validation_justification": "validateDispatch allow-lists the dispatch payload, parseLsRemote skips anything that is not a 40-hex commit and a ref, entryProblems checks every catalog field, and fetchManifest allow-lists each part of a URL before any request. Property tests feed each arbitrary input.",
   "signed_releases_status": "N/A",
   "signed_releases_justification": "This repository publishes no releases: the catalog is consumed from main, and every plugin pin is a release tag of the plugin's own repository.",
-  "version_tags_signed_status": "N/A",
-  "version_tags_signed_justification": "This repository publishes no releases: the catalog is consumed from main, and every plugin pin is a release tag of the plugin's own repository.",
+  "version_tags_signed_status": "Unmet",
+  "version_tags_signed_justification": "This repository creates no tags or releases, so there is nothing to sign. Every plugin pin is a release tag of the plugin's own repository, checked by bin/check-catalog.mjs. This criterion is only suggested.",
   "assurance_case_status": "Met",
   "assurance_case_justification": "https://github.com/monte3l/m3l-plugins/blob/main/docs/assurance-case.md.",
   "security_review_status": "Unmet",
@@ -370,5 +370,7 @@
   "osps_vm_06_01_status": "Met",
   "osps_vm_06_01_justification": "https://github.com/monte3l/m3l-plugins/blob/main/SECURITY.md#remediation-thresholds: a new CodeQL alert of error severity or critical or high security severity blocks the PR; one in merged code at medium or higher is fixed within 60 days of triage.",
   "osps_vm_06_02_status": "Met",
-  "osps_vm_06_02_justification": "CodeQL default setup analyzes every push and PR, and the CodeQL check is required on main. By GitHub's default it fails on a new alert of error severity or critical or high security severity."
+  "osps_vm_06_02_justification": "CodeQL default setup analyzes every push and PR, and the CodeQL check is required on main. By GitHub's default it fails on a new alert of error severity or critical or high security severity.",
+  "hardening_status": "Met",
+  "hardening_justification": "https://github.com/monte3l/m3l-plugins/blob/main/.github/workflows/ -- every workflow starts from read-only or empty permissions and sets them per job, uses persist-credentials: false on every checkout, pins every action by commit SHA and passes event values to scripts only through env:. zizmor and actionlint enforce it on every change. The docs site is served with CSP, HSTS, nosniff, Referrer-Policy and Permissions-Policy headers."
 }
