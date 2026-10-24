@@ -1,14 +1,19 @@
 # CLAUDE.md
 
-`m3l-plugins` is the `monte3l` Claude Code plugin marketplace: a catalog, with no plugin code. Standing rules for the whole workspace are in `~/workspaces/monte3l/CLAUDE.md`.
+`m3l-plugins` is the `monte3l` Claude Code plugin marketplace: a catalog, with no plugin code.
 
 This file sits in `.claude/`, not the repo root: a root `CLAUDE.md` makes `claude plugin validate --strict .` warn.
+
+## Layout
+
+The product is `.claude-plugin/marketplace.json`. `bin/*.mjs` entry scripts only parse arguments and print; the logic is in `bin/lib/` (`catalog.mjs`, `dispatch.mjs`, `signed-range.mjs`). `bin/` imports only the Node standard library, never a package. `check-catalog`, `bump-pins` and `smoke-install.sh` read the network and fail closed; the unit tests do not. Full picture: `docs/architecture.md`.
 
 ## Commands
 
 | Command | Purpose |
 | --- | --- |
 | `claude plugin validate --strict .` | Catalog schema. Does not fetch remote sources |
+| `shellcheck bin/*.sh` | Shell lint, run in the `checks` lane |
 | `node bin/check-catalog.mjs` | Every pin is a release tag of a `monte3l` repo, its `sha` is what the tag resolves to, `description` equals `plugin.json`'s, and the README table has a row |
 | `node bin/bump-pins.mjs --check` | `OK` or `STALE` per plugin. `--apply` rewrites `ref` and `sha` and copies the new `plugin.json` description. `--only owner/repo` limits it to one repository |
 | `PAYLOAD_REPOSITORY=monte3l/<repo> node bin/bump-for-release.mjs` | What the `Pins` workflow runs on a `release-published` dispatch: checks the repository is listed, bumps only its pins and adds the CHANGELOG line. Edits files only; the workflow opens the pull request |
@@ -40,6 +45,7 @@ Installed by `/customize`. None of it runs in CI; it only shapes Claude Code ses
 | `.claude/hooks/guard-secret-writes.mjs` | Blocks writes of `.env` files and token literals |
 | `.claude/hooks/statusline.mjs`, `.claude/hooks/subagent-statusline.mjs`, `.claude/hooks/statusline-layout.mjs` | Status line renderers |
 | `.claude/agents/Explore.md`, `.claude/agents/code-reviewer.md`, `.claude/agents/silent-failure-hunter.md` | Read-only search and review spokes |
+| `.claude/skills/customize/SKILL.md` | The one-time tailoring pass that installed this harness |
 | `.claude/skills/starting-work/SKILL.md`, `.claude/skills/writing-commits/SKILL.md`, `.claude/skills/creating-prs/SKILL.md`, `.claude/skills/finishing-work/SKILL.md`, `.claude/skills/triaging-ci/SKILL.md` | The branch, commit, PR, close-out and CI-triage workflow, targeted at this repo's `verify` lanes |
 | `.claude/skills/reviewing-dependabot-prs/SKILL.md`, `.claude/skills/triaging-scan-alerts/SKILL.md`, `.claude/skills/watching-pr-checks/SKILL.md` | `gh`-driven PR skills |
 | `.claude/skills/harness-guidance/SKILL.md` | Checks this `.claude/` surface against current Anthropic guidance; its state is `docs/research/harness-refresh.md` |
