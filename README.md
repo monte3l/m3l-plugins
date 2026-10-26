@@ -12,15 +12,58 @@ Anyone who wants a `monte3l` Claude Code plugin, and any `monte3l` maintainer wh
 
 ## Quickstart
 
+From your shell:
+
 ```bash
 claude plugin marketplace add monte3l/m3l-plugins
 claude plugin install <plugin>@monte3l
 ```
 
-Inside a session, the same two steps are `/plugin marketplace add monte3l/m3l-plugins` and `/plugin install <plugin>@monte3l`.
+Or inside a Claude Code session:
+
+```text
+/plugin marketplace add monte3l/m3l-plugins
+/plugin install <plugin>@monte3l
+```
+
+To add the marketplace and install in one step, use `claude plugin install <plugin> --marketplace monte3l/m3l-plugins` or `/plugin install <plugin> --marketplace monte3l/m3l-plugins`. The shell form installs at user scope unless you pass `--scope project` or `--scope local`. The session form opens the plugin's details and asks you to pick a scope.
 
 > [!IMPORTANT]
-> Earlier installs came from three marketplaces: `monte3l` (from `monte3l/m3l-groundwork`), `monte3l-prompt-optimizer` and `monte3l-output-governor`. Claude Code allows one marketplace per name, so remove the old one first with `claude plugin marketplace remove <name>`, then add this one. Plugin ids do not change.
+> Earlier installs came from three marketplaces: `monte3l` (from `monte3l/m3l-groundwork`), `monte3l-prompt-optimizer` and `monte3l-output-governor`. Claude Code allows one marketplace per name, so remove the old one first, then add this one. Plugin ids do not change.
+>
+> ```bash
+> claude plugin marketplace remove <name>
+> ```
+>
+> ```text
+> /plugin marketplace remove <name>
+> ```
+
+## Settings
+
+Each plugin declares its own options, and the catalog adds none. A plugin that has options lists them in its README. To set them:
+
+| Way | From your shell | Inside a session |
+| --- | --- | --- |
+| At install | `claude plugin install <plugin>@monte3l --config key=value`, repeatable | Not available; configure after the install |
+| Later | `claude plugin configure <plugin>@monte3l --values-stdin`, with a JSON object of single-line strings on stdin | `/plugin`, then **Installed**, the plugin, **Configure options** |
+| Check what is set | `claude plugin configure <plugin>@monte3l`, which never prints secrets | The same dialog |
+
+> [!WARNING]
+> Never pass a key or token with `--config`: it lands in your shell history. Use `--values-stdin` or the dialog.
+
+## Manage plugins
+
+| Task | From your shell | Inside a session |
+| --- | --- | --- |
+| Update a plugin | `claude plugin update <plugin>@monte3l` | `/plugin`, then **Installed**, the plugin, **Update now** |
+| Update the listing | `claude plugin marketplace update monte3l` | `/plugin marketplace update monte3l` |
+| Update automatically | Not available | `/plugin`, then **Marketplaces**, `monte3l`, **Enable auto-update** |
+| Turn off or on | `claude plugin disable <plugin>@monte3l`, then `claude plugin enable <plugin>@monte3l` | `/plugin disable <plugin>@monte3l`, then `/plugin enable <plugin>@monte3l` |
+| Uninstall | `claude plugin uninstall <plugin>@monte3l` | `/plugin uninstall <plugin>@monte3l` |
+| Remove the marketplace | `claude plugin marketplace remove monte3l` | `/plugin marketplace remove monte3l` |
+
+`monte3l` is not an official Anthropic marketplace, so Claude Code does not update its plugins automatically unless you turn auto-update on. After a change inside a session, run `/reload-plugins` to apply it.
 
 ## How it works
 
@@ -38,7 +81,7 @@ Entries never carry a `version`. The plugin's own `plugin.json` owns it, so a ne
 
 ## Requirements
 
-Claude Code 2.1.275 or later for the one-step `claude plugin install <plugin> --marketplace monte3l/m3l-plugins` form. Node.js, as pinned in `.node-version`, to run the scripts in `bin/`.
+Claude Code 2.1.292 or later for the one-step `claude plugin install <plugin> --marketplace monte3l/m3l-plugins` form in your shell, and 2.1.275 or later for `/plugin install <plugin> --marketplace monte3l/m3l-plugins` in a session. Node.js, as pinned in `.node-version`, to run the scripts in `bin/`.
 
 ## Working on this repo
 
