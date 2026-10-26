@@ -3,6 +3,8 @@
 [![verify](https://github.com/monte3l/m3l-plugins/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/monte3l/m3l-plugins/actions/workflows/verify.yml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/monte3l/m3l-plugins/badge)](https://securityscorecards.dev/viewer/?uri=github.com/monte3l/m3l-plugins)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/15760/badge)](https://www.bestpractices.dev/projects/15760)
+[![OpenSSF Baseline](https://www.bestpractices.dev/projects/15760/baseline)](https://www.bestpractices.dev/projects/15760)
+[![REUSE status](https://api.reuse.software/badge/github.com/monte3l/m3l-plugins)](https://api.reuse.software/info/github.com/monte3l/m3l-plugins)
 
 A Claude Code plugin marketplace with one catalogue for every plugin the organization publishes, each pinned to a release.
 
