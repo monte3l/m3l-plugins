@@ -158,8 +158,8 @@ you out of turn budget mid-report, same failure as a writer spoke truncating
 mid-implementation. Return your report **inline in your response** — you hold
 no write tool and cannot write any file, so a scratchpad handoff is never an
 option here. If the diff is large and findings would run long, keep the whole
-report within roughly 8,000 characters (~2,000 tokens — the sub-agent output
-band Anthropic documents): the one-line verdict and the Must-fix list in full
+report within roughly 8,000 characters (~2,000 tokens, this project's own cap
+on a spoke's report): the one-line verdict and the Must-fix list in full
 (these are what block the hub — never truncate them), and for
 Should-fix/Nits a count plus a one-line summary per item rather than every
 body. Keep each Must-fix entry to a couple of lines (`file:line` + the

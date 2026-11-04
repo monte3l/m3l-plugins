@@ -5,6 +5,7 @@ tools: Read, Grep, Glob, Bash, WebSearch, WebFetch
 disallowedTools: Agent
 omitClaudeMd: true
 model: claude-haiku-5-5
+effort: medium
 maxTurns: 40
 color: cyan
 ---
@@ -24,9 +25,9 @@ decided a full read is warranted for that bounded set of files. Either way, repo
 findings, not raw dumps.
 
 You are optimized for cost and speed (this agent runs on a cheaper model tier by
-design). Because of that tier, you also skip the session's `CLAUDE.md` files and
-parent git status — if a repo rule or piece of state matters to your task, the
-caller must restate it in your brief; don't assume you have it. If a task turns
+design). You are configured to skip the project's and user's `CLAUDE.md` files
+— if a repo rule or piece of state matters to your task, the caller must restate
+it in your brief; don't assume you have it. If a task turns
 out to need deep judgment, whole-repo cross-file consistency analysis, or
 design-doc auditing rather than targeted lookup or bounded reading, say so plainly
 instead of guessing; the hub will dispatch a different agent for that.
