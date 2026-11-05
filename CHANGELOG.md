@@ -21,3 +21,4 @@ This repository publishes no releases. The catalog is the product: every change 
 - `.bestpractices.json` answers `version_tags_signed` Unmet (the form takes no N/A) and `hardening` Met.
 - `.bestpractices.json` answers `external_dependencies` N/A, the only status the form accepts for a project whose shipped scripts have no dependencies.
 - Moved `m3l-groundwork-customize` to `@monte3l/groundwork@1.1.1`.
+- Moved `m3l-groundwork-customize` to `@monte3l/groundwork@1.2.0`.
