@@ -13,9 +13,9 @@ name: Verify
 # listed plugin), `dco`.
 #
 # Three lanes install packages, each from its own directory whose committed
-# lockfile pins them by integrity hash: `plugin` (.github/ci-tools/, Claude
+# lockfile pins them by integrity hash: `plugin` (tools/ci/, Claude
 # Code, whose install script runs because it fetches the native binary), `lint`
-# (.github/dev-tools/) and `property` (tests/property/), both with
+# (tools/dev/) and `property` (tests/property/), both with
 # --ignore-scripts. Every lane holds read-only permissions and no secrets. The
 # listed plugins are public, so cloning them needs no token.
 on:
@@ -63,7 +63,7 @@ jobs:
       - run: node design/source/docs-kit/build.mjs --check
 
   # ESLint's recommended rules plus a few strict ones, over bin/, tests/, the
-  # hooks and the docs config. The linter comes from .github/dev-tools/ and its
+  # hooks and the docs config. The linter comes from tools/dev/ and its
   # config is committed there; nothing is written.
   lint:
     name: Lint
@@ -78,9 +78,9 @@ jobs:
         with:
           node-version-file: .node-version
 
-      - run: npm ci --ignore-scripts --prefix .github/dev-tools
+      - run: npm ci --ignore-scripts --prefix tools/dev
 
-      - run: .github/dev-tools/node_modules/.bin/eslint -c .github/dev-tools/eslint.config.mjs .
+      - run: tools/dev/node_modules/.bin/eslint -c tools/dev/eslint.config.mjs .
 
   # Property-based tests (fast-check) of the parsers that read outside input.
   # They need no network. A failure prints the seed and the shrunk
@@ -134,9 +134,9 @@ jobs:
         with:
           node-version-file: .node-version
 
-      - run: npm ci --prefix .github/ci-tools
+      - run: npm ci --prefix tools/ci
 
-      - run: echo "$PWD/.github/ci-tools/node_modules/.bin" >> "$GITHUB_PATH"
+      - run: echo "$PWD/tools/ci/node_modules/.bin" >> "$GITHUB_PATH"
 
       # Strict, with one accepted warning: the validator says "m3l-claude-mentor"
       # reads as one of Anthropic's own names, because it contains "claude".

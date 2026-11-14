@@ -137,7 +137,7 @@ Revoke it at the source first (the Cloudflare token, the App's private key, the 
 ## Accepted risk
 
 > [!NOTE]
-> Accepted risk: the `plugin` lane of `verify.yml` installs `@anthropic-ai/claude-code` from `.github/ci-tools/` **with** its install script, because the script fetches the native binary. The lockfile pins the package by integrity hash, Dependabot proposes bumps after a one-day cooldown, and the job holds read-only permissions and no secrets. The same lane installs the listed plugins into a throwaway profile, which clones each pinned commit.
+> Accepted risk: the `plugin` lane of `verify.yml` installs `@anthropic-ai/claude-code` from `tools/ci/` **with** its install script, because the script fetches the native binary. The lockfile pins the package by integrity hash, Dependabot proposes bumps after a one-day cooldown, and the job holds read-only permissions and no secrets. The same lane installs the listed plugins into a throwaway profile, which clones each pinned commit.
 
 ## Accepted OpenSSF Scorecard findings
 
