@@ -66,11 +66,11 @@ npm ci --ignore-scripts --prefix tests/property
 node --test "tests/property/*.property.test.js"
 ```
 
-ESLint checks the JavaScript. Its version is pinned in `.github/dev-tools/`:
+ESLint checks the JavaScript. Its version is pinned in `tools/dev/`:
 
 ```bash
-npm ci --ignore-scripts --prefix .github/dev-tools
-.github/dev-tools/node_modules/.bin/eslint -c .github/dev-tools/eslint.config.mjs .
+npm ci --ignore-scripts --prefix tools/dev
+tools/dev/node_modules/.bin/eslint -c tools/dev/eslint.config.mjs .
 ```
 
 ### Test environments and how tests run
@@ -88,7 +88,7 @@ The first four also run on your machine with the commands above. Locally, the te
 
 | What | The standard | Enforced by |
 | --- | --- | --- |
-| JavaScript | ESLint's recommended rules plus `eqeqeq`, `no-var` and `prefer-const`, with unused disable directives an error (`.github/dev-tools/eslint.config.mjs`) | The `lint` lane |
+| JavaScript | ESLint's recommended rules plus `eqeqeq`, `no-var` and `prefer-const`, with unused disable directives an error (`tools/dev/eslint.config.mjs`) | The `lint` lane |
 | Shell | `shellcheck` clean | The `checks` lane |
 | Workflows | `actionlint` and `zizmor` clean, every action pinned to a commit SHA, per-job `permissions:` | `workflow-lint.yml` |
 | Formatting | `.editorconfig` | Review |

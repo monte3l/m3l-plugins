@@ -19,7 +19,7 @@ The product is `.claude-plugin/marketplace.json`. `bin/*.mjs` entry scripts only
 | `PAYLOAD_REPOSITORY=monte3l/<repo> node bin/bump-for-release.mjs` | What the `Pins` workflow runs on a `release-published` dispatch: checks the repository is listed, bumps only its pins and adds the CHANGELOG line. Edits files only; the workflow opens the pull request |
 | `node --test "tests/*.test.mjs"` | Unit tests for `bin/`. Offline; add one with every change to `bin/`. `verify` gates `bin/` at 80% lines, branches and functions with `--experimental-test-coverage --test-coverage-include='bin/**'` |
 | `node --test "tests/property/*.property.test.js"` | fast-check property tests of the parsers. Needs `npm ci --ignore-scripts --prefix tests/property`. A failure's counterexample becomes a regression test in `tests/` |
-| `.github/dev-tools/node_modules/.bin/eslint -c .github/dev-tools/eslint.config.mjs .` | ESLint over `bin/`, `tests/`, the hooks and `docs.config.mjs`. Needs `npm ci --ignore-scripts --prefix .github/dev-tools` |
+| `tools/dev/node_modules/.bin/eslint -c tools/dev/eslint.config.mjs .` | ESLint over `bin/`, `tests/`, the hooks and `docs.config.mjs`. Needs `npm ci --ignore-scripts --prefix tools/dev` |
 | `bin/smoke-install.sh` | Installs every plugin into a throwaway `HOME` |
 | `node design/source/docs-kit/build.mjs --check` | Docs site gate |
 

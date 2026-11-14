@@ -35,7 +35,7 @@ The boundaries are drawn in [`architecture.md`](architecture.md#trust-boundaries
 | Open design | The repository, the scripts, the policies and this document are public. Nothing depends on obscurity |
 | Separation of privilege | A change needs an author, a different approver, signed commits and passing checks. Moving a pin needs a person to merge, even when automation opened the pull request |
 | Least privilege | Workflows start from `permissions: {}`. The App token for pins is scoped to one repository and two permissions, and the deploy and cleanup jobs run in environments restricted to `main` |
-| Least common mechanism | Four separate install directories (`.github/ci-tools`, `.github/deploy-tools`, `.github/dev-tools` and `tests/property`), each with its own lockfile, so one tool's tree never widens another's |
+| Least common mechanism | Four separate install directories (`tools/ci`, `tools/deploy`, `tools/dev` and `tests/property`), each with its own lockfile, so one tool's tree never widens another's |
 | Psychological acceptability | One command per check, documented in the README, and the same commands run locally and in CI |
 
 ## Common implementation weaknesses countered

@@ -4,8 +4,8 @@ node_modules/
 .DS_Store
 tmp/
 _site/
-.github/ci-tools/node_modules/
-.github/deploy-tools/node_modules/
+tools/ci/node_modules/
+tools/deploy/node_modules/
 
 .groundwork/*
 !.groundwork/adoption-report.md

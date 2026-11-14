@@ -13,11 +13,11 @@ updates:
     labels:
       - dependencies
 
-  # .github/ci-tools/ pins the Claude Code version verify.yml installs. A bump
+  # tools/ci/ pins the Claude Code version verify.yml installs. A bump
   # can change how the plugin is validated, so it arrives as a reviewed PR with
   # a one-day cooldown.
   - package-ecosystem: npm
-    directory: /.github/ci-tools
+    directory: /tools/ci
     schedule:
       interval: weekly
     commit-message:
@@ -27,11 +27,11 @@ updates:
     labels:
       - dependencies
 
-  # .github/deploy-tools/ pins the wrangler version docs.yml deploys with. A bump
+  # tools/deploy/ pins the wrangler version docs.yml deploys with. A bump
   # can change how the site is published, so it arrives as a reviewed PR with a
   # one-day cooldown.
   - package-ecosystem: npm
-    directory: /.github/deploy-tools
+    directory: /tools/deploy
     schedule:
       interval: weekly
     commit-message:
@@ -41,12 +41,12 @@ updates:
     labels:
       - dependencies
 
-  # .github/dev-tools/ pins the ESLint version the `lint` lane runs, and
+  # tools/dev/ pins the ESLint version the `lint` lane runs, and
   # tests/property/ pins fast-check. Both are test-time tools, never shipped,
   # but a bump can change what the lanes report, so each arrives as a reviewed
   # PR with a one-week cooldown.
   - package-ecosystem: npm
-    directory: /.github/dev-tools
+    directory: /tools/dev
     schedule:
       interval: weekly
     commit-message:
