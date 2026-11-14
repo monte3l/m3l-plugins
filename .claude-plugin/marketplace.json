@@ -63,15 +63,15 @@
     },
     {
       "name": "m3l-claude-mentor",
-      "description": "A Claude Code plugin that mentors one learner on Claude and Claude Code, adapting to their mastery level.",
+      "description": "A Claude Code plugin that mentors you on Claude and Claude Code, adapting to your mastery level",
       "category": "productivity",
       "homepage": "https://claude-mentor.monte3l.com",
       "repository": "https://github.com/monte3l/m3l-claude-mentor",
       "source": {
         "source": "url",
         "url": "https://github.com/monte3l/m3l-claude-mentor.git",
-        "ref": "m3l-claude-mentor--v0.1.0",
-        "sha": "6c289eaef535b6e257572b98245f151c1a092878"
+        "ref": "m3l-claude-mentor--v0.2.0",
+        "sha": "a6d3f712dad88228004b9f1c39d9009c78f52ce4"
       },
       "metadata": {
         "m3l": {
