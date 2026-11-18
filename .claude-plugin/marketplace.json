@@ -70,8 +70,8 @@
       "source": {
         "source": "url",
         "url": "https://github.com/monte3l/m3l-claude-mentor.git",
-        "ref": "m3l-claude-mentor--v0.2.2",
-        "sha": "25c6e67eb52c13df6a0234ea01c25561f5b5f6bf"
+        "ref": "m3l-claude-mentor--v0.3.0",
+        "sha": "e35ffac7d710f8ee1b6cf27b52af33bc23ba6ad5"
       },
       "metadata": {
         "m3l": {
