@@ -6,8 +6,8 @@ styles the docs site at
 [plugins.monte3l.com](https://plugins.monte3l.com).
 
 - **Source:** [github.com/monte3l/m3l-design](https://github.com/monte3l/m3l-design)
-- **Version copied:** `v1.3.2`
-- **Last re-synced:** 2026-10-23
+- **Version copied:** `v1.3.3`
+- **Last re-synced:** 2026-11-18
 - **Date adopted:** 2026-10-20
 - **Tier:** vendored.
 
