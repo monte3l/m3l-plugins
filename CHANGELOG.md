@@ -29,3 +29,4 @@ This repository publishes no releases. The catalog is the product: every change 
 - Moved `m3l-groundwork-customize` to `@monte3l/groundwork@1.2.1`.
 - Moved `m3l-claude-mentor` to `m3l-claude-mentor--v0.3.0`.
 - Moved `m3l-claude-mentor` to `m3l-claude-mentor--v1.0.0`.
+- Moved `m3l-groundwork-customize` to `@monte3l/groundwork@1.3.0`.
