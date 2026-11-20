@@ -23,6 +23,7 @@ Claude Code reads the catalog, then clones the pinned commit of the plugin. A pu
 | `bump-pins.mjs` | `--check` reports a pin older than the newest release tag. `--apply` rewrites `ref`, `sha` and `description` | Yes: `git ls-remote` |
 | `bump-for-release.mjs` | Run by the `Pins` workflow for one `release-published` dispatch. Checks the repository is listed, bumps only its pins and adds the CHANGELOG line | Through `bump-pins.mjs` |
 | `smoke-install.sh` | Adds the catalog to a throwaway `HOME` and installs every plugin from it | Yes: clones each pinned commit |
+| `doc-parity.mjs` | Fails when the README plugin table or this document disagrees with the catalog, `bin/`, the workflows or `verify.yml`. The docs kit runs it through `verify` | No |
 
 The logic lives in `bin/lib/`. The entry scripts only read arguments and print.
 
@@ -64,6 +65,8 @@ Every workflow starts with `permissions: {}` or `contents: read`, and each job s
 | `dependency-review.yml` | pull request | Nothing | None |
 | `gitleaks.yml` | push, pull request, weekly, manual | Nothing | `GITLEAKS_LICENSE` |
 | `reuse.yml`, `workflow-lint.yml` | push, pull request | Nothing | None |
+| `commit-lint.yml` | pull request, including an edit of its title | Nothing | None |
+| `scancode.yml` | push to `main`, pull request | Nothing | None |
 | `labeler.yml` | pull request | `pull-requests: write`, labels only | None |
 | `scorecard.yml` | push to `main`, weekly, manual | `security-events: write`, `id-token: write` | None |
 | `pins.yml` | daily, `release-published`, manual | `issues: write` in `check`. `bump` mints a repository-scoped App token with `contents: write` and `pull-requests: write` | `RELEASE_APP_*` |

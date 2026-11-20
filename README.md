@@ -92,6 +92,7 @@ Claude Code 2.1.292 or later for the one-step `claude plugin install <plugin> --
 | --- | --- |
 | `claude plugin validate --strict .` | Validates the catalog. It does not fetch remote sources. It warns that `m3l-claude-mentor` reads as an Anthropic name, a warning CI accepts and no other |
 | `node bin/check-catalog.mjs` | Fails unless every pin matches its release tag, `plugin.json` and the table above. |
+| `node bin/doc-parity.mjs` | Fails when this README or `docs/architecture.md` disagrees with the catalog, `bin/` or the workflows. The docs check runs it, so `verify` does too. |
 | `node bin/bump-pins.mjs --check` | Reports plugins with a newer release. `--apply` rewrites the pins. |
 | `node --test "tests/*.test.mjs"` | Runs the unit tests for `bin/`. They need no network. `verify` adds a coverage gate of 80%. |
 | `node --test "tests/property/*.property.test.js"` | Runs the fast-check property tests. Install first with `npm ci --ignore-scripts --prefix tests/property`. |
