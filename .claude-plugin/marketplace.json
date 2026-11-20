@@ -34,8 +34,8 @@
       "source": {
         "source": "url",
         "url": "https://github.com/monte3l/m3l-prompt-optimizer.git",
-        "ref": "m3l-prompt-optimizer--v1.1.2",
-        "sha": "6cc8583e7843b25e0b6c600127f3ddf69d5436cb"
+        "ref": "m3l-prompt-optimizer--v1.1.3",
+        "sha": "47cfca28437fef174812658879d68c28daad231f"
       },
       "metadata": {
         "m3l": {
