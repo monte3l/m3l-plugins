@@ -11,6 +11,7 @@ export default {
   designDir: "design",
   brand: true,
   manifest: "package.json", // its homepage must equal siteUrl
+  parity: ["bin/doc-parity.mjs"], // README and architecture.md against the catalog, bin/ and the workflows
   navGroups: ["Start", "Project", "Security"],
   pages: [
     { src: "README.md", out: "index.html", group: "Start", label: "Overview" },
