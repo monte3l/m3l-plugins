@@ -32,3 +32,4 @@ This repository publishes no releases. The catalog is the product: every change 
 - Moved `m3l-groundwork-customize` to `@monte3l/groundwork@1.3.0`.
 - Moved `m3l-prompt-optimizer` to `m3l-prompt-optimizer--v1.1.3`.
 - Moved `m3l-output-governor` to `m3l-output-governor--v1.0.1`, and its description to match `plugin.json`.
+- Moved `m3l-groundwork-customize` to `@monte3l/groundwork@1.3.1`.
