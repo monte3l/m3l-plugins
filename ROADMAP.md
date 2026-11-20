@@ -1,6 +1,10 @@
+---
+reviewed: 2026-11-20
+---
+
 # Roadmap
 
-What this project intends to do, and not do, over roughly the next year. It is a file, not an issue board, so it survives outside any one tool. It lists what is still ahead. What has shipped is in the git history and [`CHANGELOG.md`](CHANGELOG.md).
+What this project intends to do, and not do, over roughly the next year. It lists what is still ahead. What has shipped is in the git history and [`CHANGELOG.md`](CHANGELOG.md). Work that can be closed is a GitHub issue, linked from here. What stays true until something changes is written here, so it survives outside any one tool. The rule for which goes where is the org's [tracking policy](https://github.com/monte3l/.github/blob/main/blueprint/tracking.md).
 
 ## Now
 
@@ -10,10 +14,19 @@ What this project intends to do, and not do, over roughly the next year. It is a
 ## Next 12 months
 
 - **List more `monte3l` plugins** as their repositories reach a tagged release. Each needs the checks in [`CONTRIBUTING.md`](CONTRIBUTING.md#listing-a-plugin).
-- **Grow the bus factor past 1.** The second owner approves every change today. What is missing is a second person who also authors changes and can run the pin workflow alone. No committed date. See [`GOVERNANCE.md`](GOVERNANCE.md#gold-level-criteria-this-project-does-not-meet).
-- **Close the Scorecard gaps that time closes.** `Maintained` clears once the repository is 90 days old, in January 2027, and `Code-Review` rises as reviewed changes outnumber the first commit.
-- **Move the Cloudflare and janitor secrets into their environments.** Today all seven secrets are organization secrets, so any workflow in the repository can read them. As environment secrets of `docs-cloudflare` and `env-janitor`, only a job running on `main` in that environment could. See [`SECURITY.md`](SECURITY.md#storing).
-- **Re-check the accepted risk in `verify.yml`** each time Anthropic changes how `@anthropic-ai/claude-code` installs. The lane runs its install script today because that script fetches the native binary. If a release makes that unnecessary, the lane moves to `--ignore-scripts` like the other lanes.
+- **Move the Cloudflare and janitor secrets into their environments.** Tracked in [#60](https://github.com/monte3l/m3l-plugins/issues/60). Today all seven secrets are organization secrets, so any workflow in the repository can read them. As environment secrets of `docs-cloudflare` and `env-janitor`, only a job running on `main` in that environment could. See [`SECURITY.md`](SECURITY.md#storing).
+
+## Known limits
+
+- **One person authors changes.** The second owner approves every change today. What is missing is a second person who also authors changes and can run the pin workflow alone. There is no committed date. See [`GOVERNANCE.md`](GOVERNANCE.md#gold-level-criteria-this-project-does-not-meet).
+- **Two Scorecard checks are low until time passes.** `Maintained` is expected to clear once the repository is 90 days old, in January 2027, and `Code-Review` rises as reviewed changes outnumber the first commit. Nothing to do but wait.
+- **The `verify.yml` lane runs an install script.** The lane that installs `@anthropic-ai/claude-code` runs its install script, because that script fetches the native binary. It is an accepted risk. Re-check it each time Anthropic changes how the package installs: if a release makes the script unnecessary, the lane moves to `--ignore-scripts` like the other lanes.
+
+## Unverified
+
+| Claim | Source | Date |
+| ----- | ------ | ---- |
+| Scorecard's `Maintained` check clears once the repository is 90 days old | Carried over from the previous roadmap. The Scorecard checks documentation was not re-read for this change | 2026-11-20 |
 
 ## What this project will not do
 
