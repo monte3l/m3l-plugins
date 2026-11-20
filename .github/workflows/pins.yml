@@ -66,10 +66,16 @@ jobs:
           fi
           # shellcheck disable=SC2016 # the backticks are literal Markdown
           body="$(printf 'A listed plugin has a newer release than its pin.\n\n```\n%s\n```\n\nRun `node bin/bump-pins.mjs --apply`, then `node bin/check-catalog.mjs` and `bin/smoke-install.sh`, and open a pull request.\n' "$report")"
+          # `freshness` is the organization's marker for an issue that a scheduled
+          # check opened, so one search lists them all. `gh` refuses a label the
+          # repository does not have, and labels only arrive with the baseline, so
+          # create it here; an existing label is not an error. An issue opened
+          # before this label existed gets it on its next update.
+          gh label create freshness --color b77610 --description "A scheduled check found something to update" 2>/dev/null || true
           if [ -n "$existing" ]; then
-            gh issue edit "$existing" --body "$body"
+            gh issue edit "$existing" --body "$body" --add-label freshness
           else
-            gh issue create --title "$title" --label dependencies --body "$body"
+            gh issue create --title "$title" --label dependencies --label freshness --body "$body"
           fi
 
   # Opens the pin pull request for one release. The commit is made through the
