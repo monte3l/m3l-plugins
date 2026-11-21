@@ -34,3 +34,4 @@ This repository publishes no releases. The catalog is the product: every change 
 - Moved `m3l-output-governor` to `m3l-output-governor--v1.0.1`, and its description to match `plugin.json`.
 - Moved `m3l-groundwork-customize` to `@monte3l/groundwork@1.3.1`.
 - Moved `m3l-claude-mentor` to `m3l-claude-mentor--v1.1.0`.
+- Moved `m3l-claude-mentor` to `m3l-claude-mentor--v1.2.0`.
