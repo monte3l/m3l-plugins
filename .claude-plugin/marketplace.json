@@ -52,8 +52,8 @@
       "source": {
         "source": "url",
         "url": "https://github.com/monte3l/m3l-output-governor.git",
-        "ref": "m3l-output-governor--v1.0.1",
-        "sha": "e1e282fee81fb9dc57fd70ec7cf29fb2ae3ef46e"
+        "ref": "m3l-output-governor--v1.0.2",
+        "sha": "3f88e45164c2c550e48693102cf4254e8b960d0d"
       },
       "metadata": {
         "m3l": {
