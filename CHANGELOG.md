@@ -36,3 +36,4 @@ This repository publishes no releases. The catalog is the product: every change 
 - Moved `m3l-claude-mentor` to `m3l-claude-mentor--v1.1.0`.
 - Moved `m3l-claude-mentor` to `m3l-claude-mentor--v1.2.0`.
 - Moved `m3l-groundwork-customize` to `@monte3l/groundwork@1.3.2`.
+- Moved `m3l-prompt-optimizer` to `m3l-prompt-optimizer--v1.1.4`.
