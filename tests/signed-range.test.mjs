@@ -96,7 +96,11 @@ test("parseGitPushes keeps every place a push may run: -C, and a cd that may hav
 });
 
 test("parseGitPushes finds a push wrapped in a shell, a substitution or a prefix", () => {
-  assert.equal(tipsOf("bash -c 'git push origin topic'")[0], "topic");
+  // A line with a shell, `git` and `push` also counts as a push of every branch, so there are two pushes here:
+  // the precise one and the every-branch one.
+  const wrapped = parseGitPushes("bash -c 'git push origin topic'");
+  assert.ok(wrapped.some((push) => push.tips.includes("topic")));
+  assert.ok(wrapped.some((push) => push.tips.includes("--branches")));
   assert.equal(tipsOf("echo $(git push origin topic)")[0], "topic");
   assert.equal(tipsOf("sudo git push origin topic")[0], "topic");
   assert.deepEqual(parseGitPushes("git status && git log"), []);
