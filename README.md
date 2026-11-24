@@ -80,7 +80,7 @@ Entries never carry a `version`. The plugin's own `plugin.json` owns it, so a ne
 | `m3l-groundwork-customize` | Adds the `/customize` skill, which tailors a project bootstrapped by `@monte3l/groundwork`. | [m3l-groundwork](https://github.com/monte3l/m3l-groundwork) |
 | `m3l-prompt-optimizer` | Refines the prompts you type; a clear prompt passes through unchanged. | [m3l-prompt-optimizer](https://github.com/monte3l/m3l-prompt-optimizer) |
 | `m3l-output-governor` | Measures where Claude Code's output tokens go and which levers cut them. | [m3l-output-governor](https://github.com/monte3l/m3l-output-governor) |
-| `m3l-claude-mentor` | Mentors one learner on Claude and Claude Code, adapting to their mastery level. | [m3l-claude-mentor](https://github.com/monte3l/m3l-claude-mentor) |
+| `m3l-mentor` | Mentors one learner on Claude and Claude Code, adapting to their mastery level. | [m3l-mentor](https://github.com/monte3l/m3l-mentor) |
 
 ## Requirements
 
@@ -90,7 +90,7 @@ Claude Code 2.1.292 or later for the one-step `claude plugin install <plugin> --
 
 | Command | Purpose |
 | --- | --- |
-| `claude plugin validate --strict .` | Validates the catalog. It does not fetch remote sources. It warns that `m3l-claude-mentor` reads as an Anthropic name, a warning CI accepts and no other |
+| `claude plugin validate --strict .` | Validates the catalog. It does not fetch remote sources. Any warning fails it, as does an error |
 | `node bin/check-catalog.mjs` | Fails unless every pin matches its release tag, `plugin.json` and the table above. |
 | `node bin/doc-parity.mjs` | Fails when this README or `docs/architecture.md` disagrees with the catalog, `bin/` or the workflows. The docs check runs it, so `verify` does too. |
 | `node bin/bump-pins.mjs --check` | Reports plugins with a newer release. `--apply` rewrites the pins. |
