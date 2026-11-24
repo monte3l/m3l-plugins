@@ -241,11 +241,11 @@ test("copies: a plugin removed from the catalog leaves a stale README row that i
   const dir = copyOfRepo();
   edit(dir, ".claude-plugin/marketplace.json", (text) => {
     const catalog = JSON.parse(text);
-    catalog.plugins = catalog.plugins.filter((plugin) => plugin.name !== "m3l-claude-mentor");
+    catalog.plugins = catalog.plugins.filter((plugin) => plugin.name !== "m3l-mentor");
     return JSON.stringify(catalog, null, 2);
   });
   assert.deepEqual(check({ root: dir }), [
-    "README plugins table: in the docs, not in code: m3l-claude-mentor",
+    "README plugins table: in the docs, not in code: m3l-mentor",
   ]);
 });
 

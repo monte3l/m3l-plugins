@@ -138,18 +138,10 @@ jobs:
 
       - run: echo "$PWD/tools/ci/node_modules/.bin" >> "$GITHUB_PATH"
 
-      # Strict, with one accepted warning: the validator says "m3l-claude-mentor"
-      # reads as one of Anthropic's own names, because it contains "claude".
-      # The name is kept on purpose (tag, skill namespace and docs use it).
-      # Any other warning or any error still fails this step.
+      # Strict: any warning or error fails this step. It used to accept one
+      # warning, for the name m3l-claude-mentor, which contained "claude".
       - name: Validate the catalog
-        run: |
-          claude plugin validate --strict --json . > validate.json || true
-          jq -e '
-            ([.. | objects | select(has("errors")) | .errors[]] | length) == 0
-            and ([.. | objects | select(has("warnings")) | .warnings[]
-                  | select(.message | test("reads as one of Anthropic") | not)] | length) == 0
-          ' validate.json
+        run: claude plugin validate --strict .
 
       # Adds the catalog to a throwaway HOME and installs every plugin from
       # it, cloning each pinned commit.
