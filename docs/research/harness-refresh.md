@@ -38,11 +38,17 @@ Applied 2026-11-04:
 - `Explore.md`: added `effort: medium`. Since 2.1.317 a subagent on a different
   model from the session uses its own model's saved effort, not the session's.
 
+Applied 2026-11-23 (PR #75, 15caba9):
+
+- The write matcher in `.claude/settings.json` is now `Write|Edit|NotebookEdit`.
+  `guard-secret-writes.mjs` already reads `notebook_path` (and `new_source`), so
+  a notebook edit now reaches the secret guard and the worktree guard. This
+  closes the item that was deferred on 2026-11-04.
+
 Still pending (deferred by the owner, not defects):
 
 | Item | Facet | Affects | Kind |
 | --- | --- | --- | --- |
-| Match `Write\|Edit\|NotebookEdit` for the secret guard. Adding `NotebookEdit` alone does nothing: the hook reads only `file_path`, and the notebook field name is undocumented | hooks | `.claude/settings.json`, `.claude/hooks/guard-secret-writes.mjs` | Hook behaviour, deferred |
 | Secrets written through Bash (`echo X > .env`, heredocs) are not guarded. The hooks guide suggests a `Stop` hook or a `git status --porcelain` scan | hooks | `.claude/hooks/guard-secret-writes.mjs` | Gap, not raised for a decision |
 | Reviewers are read-only by prompt only (Bash is granted). Now enforceable via agent-frontmatter `hooks:` (a `PreToolUse` Bash validator; needs folder trust, so not in `-p` runs) or a settings hook keyed on `agent_type` | agents | `.claude/agents/code-reviewer.md`, `.claude/agents/silent-failure-hunter.md`, `.claude/agents/Explore.md` | Deferred |
 | Side-effecting skills are model-invocable; `disable-model-invocation: true` would stop auto-triggering | skills | creating-prs, writing-commits, finishing-work, reviewing-dependabot-prs | Owner trade-off, left as shipped |
