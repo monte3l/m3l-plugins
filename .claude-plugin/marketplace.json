@@ -16,8 +16,8 @@
         "source": "git-subdir",
         "url": "https://github.com/monte3l/m3l-groundwork.git",
         "path": "packages/plugin",
-        "ref": "@monte3l/groundwork@1.4.0",
-        "sha": "c211a938f4e3cbb382852fdaa98c74bcfdeb4457"
+        "ref": "@monte3l/groundwork@1.5.0",
+        "sha": "4fc1e79d07a1879db39339d6667ef9f7e7bfa217"
       },
       "metadata": {
         "m3l": {
