@@ -43,3 +43,4 @@ This repository publishes no releases. The catalog is the product: every change 
 - Moved `m3l-prompt-optimizer` to `m3l-prompt-optimizer--v1.1.5`.
 - Moved `m3l-mentor` to `m3l-mentor--v2.1.0`.
 - Moved `m3l-groundwork-customize` to `@monte3l/groundwork@1.5.0`.
+- Moved `m3l-mentor` to `m3l-mentor--v2.1.1`.
