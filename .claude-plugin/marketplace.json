@@ -70,8 +70,8 @@
       "source": {
         "source": "url",
         "url": "https://github.com/monte3l/m3l-mentor.git",
-        "ref": "m3l-mentor--v2.1.0",
-        "sha": "a4b650b6288dddb3521d7fbb4498a78307666ce0"
+        "ref": "m3l-mentor--v2.1.1",
+        "sha": "8d53829fb1bf4448306404ed2b70e4c2f90eac21"
       },
       "metadata": {
         "m3l": {
