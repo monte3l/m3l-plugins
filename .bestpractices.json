@@ -162,7 +162,7 @@
   "osps_le_02_01_status": "Met",
   "osps_le_02_01_justification": "MIT, which meets the OSI Open Source Definition.",
   "osps_le_02_02_status": "Met",
-  "osps_le_02_02_justification": "MIT, which meets the OSI Open Source Definition; the catalog is distributed as this repository.",
+  "osps_le_02_02_justification": "The catalog and scripts in this repository are MIT (LICENSE), and the two bundled fonts keep OFL-1.1 (design/source/licenses/). The catalog is distributed as this repository, which also holds the MONTE3L logo files in design/source/brand/, with their own notice and not under the MIT terms.",
   "osps_le_03_01_status": "Met",
   "osps_le_03_01_justification": "https://github.com/monte3l/m3l-plugins/blob/main/LICENSE at the repository root.",
   "osps_le_03_02_status": "Met",
