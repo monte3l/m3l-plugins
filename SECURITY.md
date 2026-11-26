@@ -97,13 +97,13 @@ This is the policy for the secrets this repository uses: how they are stored, wh
 
 ### Inventory
 
-As of 2026-10-23, read from the workflows and from the GitHub API, which lists secret names and dates and never values:
+As of 2026-11-26, read from the workflows and from the GitHub API, which lists secret names and dates and never values:
 
 | Secret | What it is | Stored at | Used by | Scope and expiry |
 | --- | --- | --- | --- | --- |
 | `RELEASE_APP_CLIENT_ID`, `RELEASE_APP_PRIVATE_KEY` | Client ID and private key of the `monte3l-release` GitHub App | Organization secrets, visible to selected repositories | `pins.yml`, `bump` job, to open a pin pull request | The token it mints is limited to this repository with `contents: write` and `pull-requests: write`, and lasts an hour. The private key does not expire |
-| `JANITOR_APP_CLIENT_ID`, `JANITOR_APP_PRIVATE_KEY` | Client ID and private key of the `monte3l-env-janitor` GitHub App | Organization secrets, visible to selected repositories | `environments.yml`, the weekly cleanup | The token it mints is limited to this repository: `administration: write`, `deployments: write`, `environments: read`, never repository secrets. The private key does not expire |
-| `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | A Cloudflare API token and the account id | Organization secrets, visible to selected repositories | `docs.yml`, `deploy` job, which runs in the `docs-cloudflare` environment restricted to `main` | The token is limited to Workers Scripts and Routes on the `monte3l.com` zone, with an expiry of at most one year |
+| `JANITOR_APP_CLIENT_ID`, `JANITOR_APP_PRIVATE_KEY` | Client ID and private key of the `monte3l-env-janitor` GitHub App | Secrets of the `env-janitor` environment, which deploys from `main` only | `environments.yml`, the weekly cleanup | The token it mints is limited to this repository: `administration: write`, `deployments: write`, `environments: read`, never repository secrets. The private key does not expire |
+| `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | A Cloudflare API token and the account id | Secrets of the `docs-cloudflare` environment, which deploys from `main` only | `docs.yml`, `deploy` job, which runs in the `docs-cloudflare` environment restricted to `main` | The token is limited to Workers Scripts and Routes on the `monte3l.com` zone, with an expiry of at most one year |
 | `GITLEAKS_LICENSE` | The license key the Gitleaks action needs for an organization-owned repository | Organization secret, visible to selected repositories | `gitleaks.yml` | It licenses a scanner and authenticates to nothing else. Annual renewal |
 | `GITHUB_TOKEN` | GitHub's automatic per-run token | Created for each run | Every workflow | Each job sets its own `permissions:` block, and the repository default is read-only |
 
@@ -113,7 +113,7 @@ As of 2026-10-23, read from the workflows and from the GitHub API, which lists s
 - Secret scanning and push protection are on, and Gitleaks scans every push and pull request and runs weekly in full (`.gitleaks.toml`).
 
 > [!NOTE]
-> All seven secrets are **organization** secrets shared with selected repositories, not secrets of an environment. GitHub makes an organization secret available to every workflow in a repository it is shared with, so `docs-cloudflare` and `env-janitor` restrict where a deploy runs, not who can read the secret. The controls are the required review of every workflow change and the rule that each secret is named only in the workflow that needs it. Moving the Cloudflare and janitor secrets into their environments would close this and is on the [roadmap](ROADMAP.md).
+> The Cloudflare and janitor secrets are secrets of the `docs-cloudflare` and `env-janitor` environments, each limited to `main`, so only a job running on `main` in that environment can read them. No organization secret of those names is shared with this repository. The release App secrets and `GITLEAKS_LICENSE` are still **organization** secrets shared with selected repositories: GitHub makes those available to every workflow in the repository, on any branch. For them the controls are the required review of every workflow change and the rule that each secret is named only in the workflow that needs it.
 
 ### Accessing
 
@@ -124,11 +124,11 @@ As of 2026-10-23, read from the workflows and from the GitHub API, which lists s
 
 1. **At once** when a secret is exposed or suspected to be, or when someone with access to it leaves or loses a device that held a key.
 2. **A credential that can expire is issued with an expiry of at most one year.** That is the Cloudflare token.
-3. **A credential that cannot expire is replaced at least once a year.** That is the two GitHub App private keys: generate a new key in the App's settings, update the organization secret, delete the old key, then run the workflow that uses it to prove the new one works.
+3. **A credential that cannot expire is replaced at least once a year.** That is the two GitHub App private keys: generate a new key in the App's settings, store it (the release key as an organization secret, the janitor key with [`bin/env-secrets.sh`](https://github.com/monte3l/.github/blob/main/bin/env-secrets.sh)` set JANITOR_APP_PRIVATE_KEY`, which writes it to the `env-janitor` environment of every repository that has one), delete the old key, then run the workflow that uses it to prove the new one works. The Cloudflare token is replaced the same way with `set CLOUDFLARE_API_TOKEN`.
 4. **`GITLEAKS_LICENSE`** is replaced when the license renews, or on exposure.
 5. A rotation is recorded in the PR or issue that makes it, never with the value.
 
-To compare this inventory with what is set, list names and dates with `gh api orgs/monte3l/actions/secrets` and `gh api repos/monte3l/m3l-plugins/actions/organization-secrets`.
+To compare this inventory with what is set, list names and dates with `gh api orgs/monte3l/actions/secrets`, `gh api repos/monte3l/m3l-plugins/actions/organization-secrets` and `gh api repos/monte3l/m3l-plugins/environments/ENVIRONMENT/secrets` for `docs-cloudflare` and `env-janitor`. `bin/env-secrets.sh check` in `monte3l/.github` does the same for every repository and flags a copy a rotation missed.
 
 ### If one is exposed
 

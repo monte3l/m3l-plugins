@@ -14,7 +14,6 @@ What this project intends to do, and not do, over roughly the next year. It list
 ## Next 12 months
 
 - **List more `monte3l` plugins** as their repositories reach a tagged release. Each needs the checks in [`CONTRIBUTING.md`](CONTRIBUTING.md#listing-a-plugin).
-- **Move the Cloudflare and janitor secrets into their environments.** Tracked in [#60](https://github.com/monte3l/m3l-plugins/issues/60). Today all seven secrets are organization secrets, so any workflow in the repository can read them. As environment secrets of `docs-cloudflare` and `env-janitor`, only a job running on `main` in that environment could. See [`SECURITY.md`](SECURITY.md#storing).
 
 ## Known limits
 
