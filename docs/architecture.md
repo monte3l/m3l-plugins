@@ -70,9 +70,9 @@ Every workflow starts with `permissions: {}` or `contents: read`, and each job s
 | `labeler.yml` | pull request | `pull-requests: write`, labels only | None |
 | `scorecard.yml` | push to `main`, weekly, manual | `security-events: write`, `id-token: write` | None |
 | `pins.yml` | daily, `release-published`, manual | `issues: write` in `check`. `bump` mints a repository-scoped App token with `contents: write` and `pull-requests: write` | `RELEASE_APP_*` |
-| `docs.yml` | push to `main`, manual | Deploys the site to Cloudflare | `CLOUDFLARE_*`, organization secrets. The job runs in the `docs-cloudflare` environment, restricted to `main` |
+| `docs.yml` | push to `main`, manual | Deploys the site to Cloudflare | `CLOUDFLARE_*`, secrets of the `docs-cloudflare` environment, restricted to `main` |
 | `docs-live.yml` | daily | Nothing. A failure shows as a failed run | None |
-| `environments.yml` | weekly, manual | Mints an App token that deletes stale GitHub environments | `JANITOR_APP_*`, organization secrets. The job runs in the `env-janitor` environment, restricted to `main` |
+| `environments.yml` | weekly, manual | Mints an App token that deletes stale GitHub environments | `JANITOR_APP_*`, secrets of the `env-janitor` environment, restricted to `main` |
 
 The `verify` workflow is the one required lane aggregate. Its jobs are `checks`, `lint`, `property`, `catalog`, `plugin` and `dco`, and the final `verify` job passes only when every one of them reports `success`.
 
