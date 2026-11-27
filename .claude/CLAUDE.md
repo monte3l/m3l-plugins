@@ -42,7 +42,8 @@ Installed by `/customize`. None of it runs in CI; it only shapes Claude Code ses
 | `.claude/settings.json` | Deny rules for `.env*`, lockfiles and `.git/`; hook registrations; the status line |
 | `.claude/hooks/guard-git-push-signed.mjs` | Blocks `git push` when an outgoing commit is unsigned (imports `bin/lib/signed-range.mjs`) |
 | `.claude/hooks/guard-double-background.mjs` | Blocks a backgrounded command that also sets `run_in_background` |
-| `.claude/hooks/guard-secret-writes.mjs` | Blocks writes of `.env` files and token literals |
+| `.claude/hooks/guard-secret-writes.mjs` | Blocks writing `.env*` files and literal tokens or keys. For Bash it is a best-effort text check that blocks when in doubt: a dotenv name (any case) in a write, a command it cannot read completely that could write, a target built by an expansion, or a token literal in a write. It does not follow substitutions, scripts or wrappers |
+| `.claude/hooks/guard-readonly-agent-bash.mjs` | Best effort, asks by default. For the agents in its `READONLY_AGENTS` (`code-reviewer`, `silent-failure-hunter`, `Explore`, matched on the hook input's `agent_type`) it passes silently only one simple command from a short list (`git log\|show\|diff\|status\|ls-files\|rev-parse\|branch --list`, `ls`, `cat`, `head`, `tail`, `wc`, `grep`, `rg` (named regular files only, never a directory), `gh ... view\|list`, `node --test tests/NAME.test.mjs`) with fixed flags and realpath-checked paths inside the repository, and answers `ask` for everything else. Other agents and the main session pass untouched |
 | `.claude/hooks/statusline.mjs`, `.claude/hooks/subagent-statusline.mjs`, `.claude/hooks/statusline-layout.mjs` | Status line renderers |
 | `.claude/agents/Explore.md`, `.claude/agents/code-reviewer.md`, `.claude/agents/silent-failure-hunter.md` | Read-only search and review spokes |
 | `.claude/skills/customize/SKILL.md` | The one-time tailoring pass that installed this harness |

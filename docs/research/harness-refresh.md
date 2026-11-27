@@ -38,6 +38,8 @@ Applied 2026-11-04:
 - `Explore.md`: added `effort: medium`. Since 2.1.317 a subagent on a different
   model from the session uses its own model's saved effort, not the session's.
 
+Applied 2026-11-27 (guard Bash in read-only reviewer agents, ported from monte3l/.github#193 at 3b70510): `guard-readonly-agent-bash.mjs` (PreToolUse, Bash, keyed on `agent_type`) for `code-reviewer`, `silent-failure-hunter` and `Explore`, and a Bash mode in `guard-secret-writes.mjs`. **Both are best effort**: a shell cannot be policed completely from its text, so they decide by text and fail toward asking or blocking. The read-only guard passes silently only one simple command from a short list (no pipe, redirect, expansion, glob, wrapper or bundled option), with every path operand resolved by realpath and required strictly inside the git toplevel, and answers `ask` for everything else, `gh api` and `jq` included. The secret guard blocks a dotenv name (any case) in a write, a command it cannot read completely that could write, a target built by an expansion, and a token literal in a write; it does not follow substitutions, scripts or wrappers. Neither is a sandbox, which stays deferred. Both are registered in `settings.json`, because frontmatter `hooks` are ignored for plugin subagents (pages: `code.claude.com/docs/en/hooks`, `code.claude.com/docs/en/sub-agents`). This closes the two deferred items on Bash secrets and read-only reviewers. `tests/harness-guard-bash.test.mjs` holds the allowed, asked and blocked tables.
+
 Applied 2026-11-23 (PR #75, 15caba9):
 
 - The write matcher in `.claude/settings.json` is now `Write|Edit|NotebookEdit`.
@@ -49,8 +51,6 @@ Still pending (deferred by the owner, not defects):
 
 | Item | Facet | Affects | Kind |
 | --- | --- | --- | --- |
-| Secrets written through Bash (`echo X > .env`, heredocs) are not guarded. The hooks guide suggests a `Stop` hook or a `git status --porcelain` scan | hooks | `.claude/hooks/guard-secret-writes.mjs` | Gap, not raised for a decision |
-| Reviewers are read-only by prompt only (Bash is granted). Now enforceable via agent-frontmatter `hooks:` (a `PreToolUse` Bash validator; needs folder trust, so not in `-p` runs) or a settings hook keyed on `agent_type` | agents | `.claude/agents/code-reviewer.md`, `.claude/agents/silent-failure-hunter.md`, `.claude/agents/Explore.md` | Deferred |
 | Side-effecting skills are model-invocable; `disable-model-invocation: true` would stop auto-triggering | skills | creating-prs, writing-commits, finishing-work, reviewing-dependabot-prs | Owner trade-off, left as shipped |
 | `permissions.ask` for `Bash(git push *)` (now the docs' example, same text-matching limit as `if`), `permissions.blockWritesOutsideWorkingDirectories` (2.1.314) and `sandbox.enabled` are available | settings | `.claude/settings.json` | Design decision, not raised |
 
