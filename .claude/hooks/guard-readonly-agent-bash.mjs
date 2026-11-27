@@ -133,7 +133,7 @@ const GIT_SUBCOMMANDS = {
   branch: { allowed: ["--list", "--all", "--remotes", "--show-current", "-a", "-r"], valued: [], numbered: false, valueNext: [] },
 };
 // A revision, a range or a ref: no leading dash, no absolute path, no `..` directory.
-const REVISION = /^[A-Za-z0-9_@~^][A-Za-z0-9_.\/@~^-]*$/;
+const REVISION = /^[A-Za-z0-9_@~^][A-Za-z0-9_./@~^-]*$/;
 
 function judgeGit(args, cwd, top) {
   const [sub, ...rest] = args;
