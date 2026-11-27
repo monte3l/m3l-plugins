@@ -42,7 +42,8 @@ Installed by `/customize`. None of it runs in CI; it only shapes Claude Code ses
 | `.claude/settings.json` | Deny rules for `.env*`, lockfiles and `.git/`; hook registrations; the status line |
 | `.claude/hooks/guard-git-push-signed.mjs` | Blocks `git push` when an outgoing commit is unsigned (imports `bin/lib/signed-range.mjs`) |
 | `.claude/hooks/guard-double-background.mjs` | Blocks a backgrounded command that also sets `run_in_background` |
-| `.claude/hooks/guard-secret-writes.mjs` | Blocks writes of `.env` files and token literals |
+| `.claude/hooks/guard-secret-writes.mjs` | Blocks writes of `.env` files and token literals. Also covers Bash: a redirect or `tee` to a `.env*` file, or a token literal in a command that writes a file |
+| `.claude/hooks/guard-readonly-agent-bash.mjs` | For the agents in its `READONLY_AGENTS` (`code-reviewer`, `silent-failure-hunter`, `Explore`, matched on the hook input's `agent_type`), lets only a fixed list of read commands run and answers `ask` for anything else. Other agents and the main session pass untouched |
 | `.claude/hooks/statusline.mjs`, `.claude/hooks/subagent-statusline.mjs`, `.claude/hooks/statusline-layout.mjs` | Status line renderers |
 | `.claude/agents/Explore.md`, `.claude/agents/code-reviewer.md`, `.claude/agents/silent-failure-hunter.md` | Read-only search and review spokes |
 | `.claude/skills/customize/SKILL.md` | The one-time tailoring pass that installed this harness |
